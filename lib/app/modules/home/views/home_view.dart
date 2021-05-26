@@ -101,10 +101,15 @@ class HomeView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(R.translations.getTracking),
-                    ),
+                    StreamBuilder<UIError?>(
+                        stream: controller.isValidFieldOut,
+                        builder: (context, snapshot) {
+                          return TextButton(
+                            onPressed:
+                                snapshot.data == UIError.noError ? () {} : null,
+                            child: Text(R.translations.getTracking),
+                          );
+                        }),
                     TextButton(
                       onPressed: () {},
                       child: Text(R.translations.cancel),

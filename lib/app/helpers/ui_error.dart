@@ -2,6 +2,7 @@ import 'package:kd_rastreios_cp/app/i18n/resources.dart';
 
 enum UIError {
   invalidCode,
+  invalidFields,
   invalidName,
   noError,
 }
@@ -13,7 +14,7 @@ extension UIErrorExtension on UIError {
         return R.translations.invalidName;
       case UIError.invalidCode:
         return R.translations.invalidCode;
-      case UIError.noError:
+      default:
         return '';
     }
   }
