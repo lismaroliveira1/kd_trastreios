@@ -15,6 +15,7 @@ class HomeController extends GetxController {
   var _packages = <Map<dynamic, dynamic>>[].obs;
 
   int get indexBottomBarOut => _indexBottomBar.value;
+  Stream<int?> get indexBottomBarStream => _indexBottomBar.stream;
   Stream<UIError?> get codeFieldErrorStream => _codeFieldError.stream;
   Stream<UIError?> get nameFieldErrorStream => _nameFieldError.stream;
   Stream<UIError?> get isValidFieldOut => _isValidFields.stream;

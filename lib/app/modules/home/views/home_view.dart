@@ -10,8 +10,12 @@ import 'package:timelines/timelines.dart';
 class HomeView extends StatelessWidget {
   final HomeController controller;
   HomeView(this.controller);
+
   @override
   Widget build(BuildContext context) {
+    final PageController _pageController = PageController(
+      initialPage: controller.indexBottomBarOut,
+    );
     void _hideKeyboard() {
       final currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus) {
@@ -75,33 +79,62 @@ class HomeView extends StatelessWidget {
       ),
       body: Builder(
         builder: (context) {
-          return Container(
-              child: Obx(
-            () => ListView(
-              children: controller.packages.map(
-                (package) {
-                  return OpenContainer(
-                    closedBuilder:
-                        (BuildContext context, void Function() action) {
-                      return buildClosedContainer(package);
-                    },
-                    openBuilder: (BuildContext context,
-                        void Function({Object? returnValue}) action) {
-                      return buildOpenedContainer(package, context);
-                    },
-                  );
-                },
-              ).toList(),
-            ),
-          ));
+          controller.indexBottomBarStream.listen((view) {
+            _pageController.jumpToPage(view!);
+          });
+          return PageView(
+            controller: _pageController,
+            physics: NeverScrollableScrollPhysics(),
+            children: <Widget>[
+              buildIncompletedTrackings(),
+              buildcompletedTrackings(),
+              buildAgenciesPage(),
+              buildSetupPage(),
+            ],
+          );
         },
       ),
     );
   }
 
+  Container buildSetupPage() {
+    return Container(
+      color: Colors.grey,
+    );
+  }
+
+  Container buildAgenciesPage() {
+    return Container(
+      color: Colors.pink,
+    );
+  }
+
+  Widget buildIncompletedTrackings() {
+    return Obx(
+      () => ListView(
+        children: controller.packages.map(
+          (package) {
+            return OpenContainer(
+              closedBuilder: (BuildContext context, void Function() action) {
+                return buildClosedContainer(package);
+              },
+              openBuilder: (BuildContext context,
+                  void Function({Object? returnValue}) action) {
+                return buildOpenedContainer(package, context);
+              },
+            );
+          },
+        ).toList(),
+      ),
+    );
+  }
+
+  Widget buildcompletedTrackings() {
+    return Container();
+  }
+
   Widget buildOpenedContainer(Map package, BuildContext context) {
     List<dynamic> _trackings = package['trackings'];
-    print(_trackings);
     return SafeArea(
       child: ListView(
         children: <Widget>[

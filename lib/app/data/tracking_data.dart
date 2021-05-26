@@ -27,7 +27,6 @@ class TrackingData {
   }
 
   factory TrackingData.fromMap(Map<String, dynamic> map) {
-    print(map);
     return TrackingData(
       data: map['data'],
       dataTime: map['dataTime'],
