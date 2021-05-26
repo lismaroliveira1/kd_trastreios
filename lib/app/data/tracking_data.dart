@@ -28,24 +28,18 @@ class TrackingData {
 
   factory TrackingData.fromMap(Map<String, dynamic> map) {
     print(map);
-    String destiny = '';
-    try {
-      destiny = map['destino'];
-    } catch (_) {
-      destiny = '';
-    }
     return TrackingData(
       data: map['data'],
       dataTime: map['dataTime'],
       description: map['description'],
       city: map['city'],
-      destiny: destiny,
+      destiny: map['destiny'],
     );
   }
   factory TrackingData.fromLinkedHashMap(LinkedHashMap<dynamic, dynamic> map) {
     String destiny = '';
     try {
-      destiny = map['destino'];
+      destiny = map['destino']['cidade'] + ' - ' + map['destino']['uf'];
     } catch (_) {
       destiny = '';
     }

@@ -12,6 +12,7 @@ dependencies:
   http:
   path_provider:
   animations:
+  timelines:
   
   flutter: 
     sdk: flutter

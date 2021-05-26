@@ -20,6 +20,7 @@ class HomeUseCases {
     final response = await client.get(Uri.parse(url));
     final responseBody = jsonDecode(response.body);
     for (LinkedHashMap tracking in responseBody) {
+      print(tracking);
       _trackings.add(TrackingData.fromLinkedHashMap(tracking));
     }
     final newPackage = PackageData(
