@@ -5,7 +5,7 @@ import 'package:kd_rastreios_cp/app/storage/cache.dart';
 class ApplicationBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => Client());
-    Get.lazyPut(() => Cache());
+    Get.put(Client());
+    Get.put(Cache());
   }
 }

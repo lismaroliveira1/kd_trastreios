@@ -19,6 +19,8 @@ class HomeUseCases {
     for (LinkedHashMap tracking in responseBody) {
       _trackings.add(TrackingData.fromLinkedHashMap(tracking));
     }
+    final _cache = await cache.readData('cash');
+    print(_cache[0]['trackings']);
     return _trackings;
   }
 }

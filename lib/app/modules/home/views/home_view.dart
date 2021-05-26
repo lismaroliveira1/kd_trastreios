@@ -118,15 +118,16 @@ class HomeView extends StatelessWidget {
 
   StreamBuilder<UIError?> buildTrackingButton() {
     return StreamBuilder<UIError?>(
-        stream: controller.isValidFieldOut,
-        builder: (context, snapshot) {
-          return TextButton(
-            onPressed: snapshot.data == UIError.noError
-                ? () => controller.getPackage()
-                : null,
-            child: Text(R.translations.getTracking),
-          );
-        });
+      stream: controller.isValidFieldOut,
+      builder: (context, snapshot) {
+        return TextButton(
+          onPressed: snapshot.data == UIError.noError
+              ? () => controller.getPackage()
+              : null,
+          child: Text(R.translations.getTracking),
+        );
+      },
+    );
   }
 
   StreamBuilder<UIError?> buildNameTextField() {
