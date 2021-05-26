@@ -7,7 +7,7 @@ class HomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(
-      () => HomeController(HomeUseCases(Get.find())),
+      () => HomeController(HomeUseCases(client: Get.find(), cache: Get.find())),
     );
   }
 }

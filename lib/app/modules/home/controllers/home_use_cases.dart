@@ -3,10 +3,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:kd_rastreios_cp/app/data/tracking_data.dart';
+import 'package:kd_rastreios_cp/app/storage/cache.dart';
 
 class HomeUseCases {
   final Client client;
-  HomeUseCases(this.client);
+  final Cache cache;
+  HomeUseCases({required this.client, required this.cache});
 
   Future<List<TrackingData>> getPackages(String code) async {
     List<TrackingData> _trackings = [];
