@@ -10,16 +10,19 @@ class SplashView extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('SplashView'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Text(
-          'SplashView is working',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
+      body: Builder(builder: (context) {
+        controller.jumpToPageStream.listen((page) {
+          if (page?.isNotEmpty == true) {
+            Get.offAllNamed(page!);
+          }
+        });
+        return Center(
+          child: Text(
+            'SplashView is working',
+            style: TextStyle(fontSize: 20),
+          ),
+        );
+      }),
     );
   }
 }

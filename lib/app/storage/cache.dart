@@ -37,6 +37,7 @@ class Cache {
   Future<void> verifyCache() async {
     final List<Map> setupData = await readData('cash');
     if (setupData.length == 0) {
+      print('ok');
       final defaultSetupMap = [
         {
           'trackings': [],
