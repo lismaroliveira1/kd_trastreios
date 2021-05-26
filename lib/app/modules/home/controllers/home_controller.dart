@@ -6,7 +6,7 @@ class HomeController extends GetxController {
   final HomeUseCases homeUseCases;
   HomeController(this.homeUseCases);
 
-  var _indexBottomBar = 0.obs;
+  var _indexBottomBar = RxInt(0);
   var _trackingName = ''.obs;
   var _trackingCode = ''.obs;
   var _codeFieldError = Rx<UIError>(UIError.noError);

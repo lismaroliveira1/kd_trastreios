@@ -9,15 +9,13 @@ import 'package:timelines/timelines.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller;
-  HomeView(this.controller);
-
+  final PageController pageController;
+  HomeView(this.controller, this.pageController);
   @override
   Widget build(BuildContext context) {
-    final PageController _pageController = PageController(
-      initialPage: controller.indexBottomBarOut,
-    );
     void _hideKeyboard() {
       final currentFocus = FocusScope.of(context);
+
       if (!currentFocus.hasPrimaryFocus) {
         currentFocus.unfocus();
       }
@@ -80,10 +78,11 @@ class HomeView extends StatelessWidget {
       body: Builder(
         builder: (context) {
           controller.indexBottomBarStream.listen((view) {
-            _pageController.jumpToPage(view!);
+            print(view);
+            pageController.jumpToPage(view!);
           });
           return PageView(
-            controller: _pageController,
+            controller: pageController,
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
               buildIncompletedTrackings(),
