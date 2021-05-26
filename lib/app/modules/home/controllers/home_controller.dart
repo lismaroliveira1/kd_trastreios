@@ -8,9 +8,11 @@ class HomeController extends GetxController {
 
   var _indexBottomBar = 0.obs;
   var _codeFieldError = Rx<UIError>(UIError.noError);
+  var _nameFieldError = Rx<UIError>(UIError.noError);
 
   int get indexBottomBarOut => _indexBottomBar.value;
   Stream<UIError?> get codeFieldErrorStream => _codeFieldError.stream;
+  Stream<UIError?> get nameFieldErrorStream => _nameFieldError.stream;
 
   @override
   void onInit() {
@@ -33,5 +35,11 @@ class HomeController extends GetxController {
     value.length <= 10
         ? _codeFieldError.value = UIError.invalidCode
         : _codeFieldError.value = UIError.noError;
+  }
+
+  void validateName(String value) {
+    value.length > 2
+        ? _nameFieldError.value = UIError.noError
+        : _nameFieldError.value = UIError.invalidName;
   }
 }

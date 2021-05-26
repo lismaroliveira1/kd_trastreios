@@ -94,27 +94,9 @@ class HomeView extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text(R.translations.newTrackingPackage),
-                SizedBox(
-                  height: 35,
-                ),
-                StreamBuilder<UIError?>(
-                    stream: controller.codeFieldErrorStream,
-                    builder: (context, snapshot) {
-                      return TextFormField(
-                        onChanged: (value) => controller.validateCode(value),
-                        decoration: InputDecoration(
-                          labelText: R.translations.tranckindCode,
-                          errorText: snapshot.data == UIError.noError
-                              ? null
-                              : snapshot.data?.description,
-                        ),
-                      );
-                    }),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: R.translations.packageName,
-                  ),
-                ),
+                Spacer(),
+                buildCodeTextField(),
+                buildNameTextField(),
                 Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -135,5 +117,37 @@ class HomeView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  StreamBuilder<UIError?> buildNameTextField() {
+    return StreamBuilder<UIError?>(
+        stream: controller.nameFieldErrorStream,
+        builder: (context, snapshot) {
+          return TextFormField(
+            onChanged: (value) => controller.validateName(value),
+            decoration: InputDecoration(
+              labelText: R.translations.packageName,
+              errorText: snapshot.data == UIError.noError
+                  ? null
+                  : snapshot.data?.description,
+            ),
+          );
+        });
+  }
+
+  StreamBuilder<UIError?> buildCodeTextField() {
+    return StreamBuilder<UIError?>(
+        stream: controller.codeFieldErrorStream,
+        builder: (context, snapshot) {
+          return TextFormField(
+            onChanged: (value) => controller.validateCode(value),
+            decoration: InputDecoration(
+              labelText: R.translations.tranckindCode,
+              errorText: snapshot.data == UIError.noError
+                  ? null
+                  : snapshot.data?.description,
+            ),
+          );
+        });
   }
 }
