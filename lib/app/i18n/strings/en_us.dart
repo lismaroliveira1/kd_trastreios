@@ -10,4 +10,6 @@ class EnUS implements Translations {
   String get completed => 'In transit';
   String get nearbyAgencies => 'Nearby Agencies';
   String get setup => 'Setup';
+  String get invalidName => 'Invalid name';
+  String get invalidCode => 'Invalid tracking code';
 }

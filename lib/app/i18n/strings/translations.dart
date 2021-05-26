@@ -8,4 +8,6 @@ abstract class Translations {
   String get completed;
   String get nearbyAgencies;
   String get setup;
+  String get invalidName;
+  String get invalidCode;
 }

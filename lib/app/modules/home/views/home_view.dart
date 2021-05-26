@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
 import 'package:kd_rastreios_cp/app/i18n/i18n.dart';
 import 'package:kd_rastreios_cp/app/modules/home/controllers/home_controller.dart';
 
@@ -31,51 +32,7 @@ class HomeView extends StatelessWidget {
                   transitionDuration: Duration(milliseconds: 600),
                   reverseTransitionDuration: Duration(milliseconds: 250),
                 ),
-                builder: (context) => Dialog(
-                  child: InkWell(
-                    onTap: () => _hideKeyboard(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Container(
-                        height: 240,
-                        width: 300,
-                        color: Colors.white,
-                        child: Column(
-                          children: <Widget>[
-                            Text(R.translations.newTrackingPackage),
-                            SizedBox(
-                              height: 35,
-                            ),
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: R.translations.tranckindCode,
-                              ),
-                            ),
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: R.translations.packageName,
-                              ),
-                            ),
-                            Spacer(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                TextButton(
-                                  onPressed: () {},
-                                  child: Text(R.translations.getTracking),
-                                ),
-                                TextButton(
-                                  onPressed: () {},
-                                  child: Text(R.translations.cancel),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                builder: (context) => buildNewTrackingDialog(_hideKeyboard),
               );
             },
           ),
@@ -119,6 +76,62 @@ class HomeView extends StatelessWidget {
         child: Text(
           'HomeView is working',
           style: TextStyle(fontSize: 20),
+        ),
+      ),
+    );
+  }
+
+  Dialog buildNewTrackingDialog(void _hideKeyboard()) {
+    return Dialog(
+      child: InkWell(
+        onTap: () => _hideKeyboard(),
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            height: 240,
+            width: 300,
+            color: Colors.white,
+            child: Column(
+              children: <Widget>[
+                Text(R.translations.newTrackingPackage),
+                SizedBox(
+                  height: 35,
+                ),
+                StreamBuilder<UIError?>(
+                    stream: controller.codeFieldErrorStream,
+                    builder: (context, snapshot) {
+                      return TextFormField(
+                        onChanged: (value) => controller.validateCode(value),
+                        decoration: InputDecoration(
+                          labelText: R.translations.tranckindCode,
+                          errorText: snapshot.data == UIError.noError
+                              ? null
+                              : snapshot.data?.description,
+                        ),
+                      );
+                    }),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: R.translations.packageName,
+                  ),
+                ),
+                Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(R.translations.getTracking),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(R.translations.cancel),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
