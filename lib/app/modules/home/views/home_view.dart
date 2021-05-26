@@ -81,10 +81,10 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Dialog buildNewTrackingDialog(void _hideKeyboard()) {
+  Dialog buildNewTrackingDialog(Function hideKeyboard) {
     return Dialog(
       child: InkWell(
-        onTap: () => _hideKeyboard(),
+        onTap: () => hideKeyboard(),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: Container(
@@ -101,15 +101,7 @@ class HomeView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    StreamBuilder<UIError?>(
-                        stream: controller.isValidFieldOut,
-                        builder: (context, snapshot) {
-                          return TextButton(
-                            onPressed:
-                                snapshot.data == UIError.noError ? () {} : null,
-                            child: Text(R.translations.getTracking),
-                          );
-                        }),
+                    buildTrackingButton(),
                     TextButton(
                       onPressed: () {},
                       child: Text(R.translations.cancel),
@@ -122,6 +114,19 @@ class HomeView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  StreamBuilder<UIError?> buildTrackingButton() {
+    return StreamBuilder<UIError?>(
+        stream: controller.isValidFieldOut,
+        builder: (context, snapshot) {
+          return TextButton(
+            onPressed: snapshot.data == UIError.noError
+                ? () => controller.getPackage()
+                : null,
+            child: Text(R.translations.getTracking),
+          );
+        });
   }
 
   StreamBuilder<UIError?> buildNameTextField() {

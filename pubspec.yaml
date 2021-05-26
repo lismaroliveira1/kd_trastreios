@@ -9,6 +9,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   get:
   bottom_navy_bar:
+  http:
   animations:
   
   flutter: 

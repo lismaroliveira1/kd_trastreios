@@ -61,4 +61,8 @@ class HomeController extends GetxController {
         ? _isValidFields.value = UIError.noError
         : _isValidFields.value = UIError.invalidFields;
   }
+
+  Future<void> getPackage() async {
+    await homeUseCases.getPackages(_trackingCode.value);
+  }
 }
