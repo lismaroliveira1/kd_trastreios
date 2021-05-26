@@ -12,6 +12,7 @@ class HomeController extends GetxController {
   var _codeFieldError = Rx<UIError>(UIError.noError);
   var _nameFieldError = Rx<UIError>(UIError.noError);
   var _isValidFields = Rx<UIError>(UIError.invalidFields);
+  var _trackings = Rx<List<Map<dynamic, dynamic>>>([]);
 
   int get indexBottomBarOut => _indexBottomBar.value;
   Stream<UIError?> get codeFieldErrorStream => _codeFieldError.stream;
@@ -63,6 +64,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> getPackage() async {
-    await homeUseCases.getPackages(_trackingCode.value);
+    final trackings = await homeUseCases.getPackages(_trackingCode.value);
+    print(trackings.length);
   }
 }

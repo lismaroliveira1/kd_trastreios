@@ -10,6 +10,7 @@ dependencies:
   get:
   bottom_navy_bar:
   http:
+  path_provider:
   animations:
   
   flutter: 
