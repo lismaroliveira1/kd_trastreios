@@ -27,6 +27,7 @@ class TrackingData {
   }
 
   factory TrackingData.fromMap(Map<String, dynamic> map) {
+    print(map);
     String destiny = '';
     try {
       destiny = map['destino'];
@@ -35,9 +36,9 @@ class TrackingData {
     }
     return TrackingData(
       data: map['data'],
-      dataTime: map['dataHora'],
-      description: map['descricao'],
-      city: map['cidade'],
+      dataTime: map['dataTime'],
+      description: map['description'],
+      city: map['city'],
       destiny: destiny,
     );
   }

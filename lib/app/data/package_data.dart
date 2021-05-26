@@ -6,11 +6,14 @@ class PackageData {
   String code;
   String name;
   List<TrackingData> trackings;
-
+  DateTime createAt;
+  DateTime updatedAt;
   PackageData({
     required this.code,
     required this.name,
     required this.trackings,
+    required this.createAt,
+    required this.updatedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -18,6 +21,8 @@ class PackageData {
       'code': code,
       'name': name,
       'trackings': trackings.map((x) => x.toMap()).toList(),
+      'createAt': createAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
     };
   }
 
@@ -30,6 +35,8 @@ class PackageData {
           (x) => TrackingData.fromMap(x),
         ),
       ),
+      createAt: DateTime.fromMillisecondsSinceEpoch(map['createAt']),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt']),
     );
   }
 

@@ -39,7 +39,7 @@ class Cache {
     if (setupData.length == 0) {
       final defaultSetupMap = [
         {
-          'trackings': [],
+          'packages': [],
           'setup': {
             'themeMode': 3,
           }

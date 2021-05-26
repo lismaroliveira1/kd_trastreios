@@ -12,15 +12,21 @@ class HomeController extends GetxController {
   var _codeFieldError = Rx<UIError>(UIError.noError);
   var _nameFieldError = Rx<UIError>(UIError.noError);
   var _isValidFields = Rx<UIError>(UIError.invalidFields);
-  var _trackings = Rx<List<Map<dynamic, dynamic>>>([]);
+  var _packages = <Map<dynamic, dynamic>>[].obs;
 
   int get indexBottomBarOut => _indexBottomBar.value;
   Stream<UIError?> get codeFieldErrorStream => _codeFieldError.stream;
   Stream<UIError?> get nameFieldErrorStream => _nameFieldError.stream;
   Stream<UIError?> get isValidFieldOut => _isValidFields.stream;
-
+  List<Map<dynamic, dynamic>> get packages => _packages.toList();
   @override
-  void onInit() {
+  void onInit() async {
+    final _cache = await homeUseCases.cache.readData('cash');
+    List<dynamic> packagesCache = _cache[0]['packages'];
+    _packages.clear();
+    packagesCache.forEach((element) {
+      _packages.add(element);
+    });
     super.onInit();
   }
 
@@ -64,7 +70,13 @@ class HomeController extends GetxController {
   }
 
   Future<void> getPackage() async {
-    final trackings = await homeUseCases.getPackages(_trackingCode.value);
-    print(trackings.length);
+    final trackings = await homeUseCases.getPackages(
+      code: _trackingCode.value,
+      name: _trackingName.value,
+    );
+    _packages.clear();
+    trackings.forEach((element) {
+      _packages.add(element.toMap());
+    });
   }
 }

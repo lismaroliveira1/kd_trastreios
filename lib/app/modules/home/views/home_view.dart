@@ -20,7 +20,7 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('HomeView'),
+        title: Obx(() => Text(controller.packages.length.toString())),
         centerTitle: true,
         actions: [
           IconButton(
@@ -72,10 +72,59 @@ class HomeView extends StatelessWidget {
           onItemSelected: (int value) => controller.changeIndexBottomBar(value),
         ),
       ),
-      body: Center(
-        child: Text(
-          'HomeView is working',
-          style: TextStyle(fontSize: 20),
+      body: Builder(
+        builder: (context) {
+          return Container(
+              child: Obx(
+            () => ListView(
+              children: controller.packages.map(
+                (package) {
+                  return OpenContainer(
+                    closedBuilder:
+                        (BuildContext context, void Function() action) {
+                      return buildClosedContainer(package);
+                    },
+                    openBuilder: (BuildContext context,
+                        void Function({Object? returnValue}) action) {
+                      return buildOpenedContainer(package);
+                    },
+                  );
+                },
+              ).toList(),
+            ),
+          ));
+        },
+      ),
+    );
+  }
+
+  Widget buildOpenedContainer(Map package) => SafeArea(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              Text(package['name']),
+              Text(package['code']),
+            ],
+          ),
+        ),
+      );
+
+  Widget buildClosedContainer(Map package) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        child: Container(
+          height: 100,
+          child: Column(
+            children: <Widget>[
+              Text(package['name']),
+              Text(package['code']),
+              Text(package['trackings'].first['dataTime']),
+              Text(package['trackings'].first['city']),
+              Text(package['trackings'].first['destiny']),
+              Text(package['trackings'].first['description'])
+            ],
+          ),
         ),
       ),
     );
