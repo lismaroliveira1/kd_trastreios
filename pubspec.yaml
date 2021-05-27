@@ -14,6 +14,7 @@ dependencies:
   animations:
   timelines:
   google_maps_flutter:
+  location:
   
   flutter: 
     sdk: flutter

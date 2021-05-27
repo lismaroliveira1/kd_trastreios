@@ -109,16 +109,21 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Container buildAgenciesPage() {
-    return Container(
-      child: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(37.42796133580664, -122.085749655962),
-          zoom: 14.4746,
+  Widget buildAgenciesPage() {
+    return Obx(
+      () => Container(
+        child: GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(
+              controller.locationData.latitude!,
+              controller.locationData.longitude!,
+            ),
+            zoom: 14.4746,
+          ),
+          onMapCreated: (GoogleMapController mapController) =>
+              controller.onMapComplete(mapController),
         ),
-        onMapCreated: (GoogleMapController mapController) =>
-            controller.onMapComplete(mapController),
       ),
     );
   }

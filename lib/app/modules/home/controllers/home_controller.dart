@@ -4,13 +4,18 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
 import 'package:kd_rastreios_cp/app/modules/home/controllers/home_use_cases.dart';
+import 'package:location/location.dart';
 
 class HomeController extends GetxController {
   final HomeUseCases homeUseCases;
   final Completer<GoogleMapController> googleMapController;
+  final Location location;
 
-  HomeController(
-      {required this.homeUseCases, required this.googleMapController});
+  HomeController({
+    required this.homeUseCases,
+    required this.googleMapController,
+    required this.location,
+  });
 
   var _indexBottomBar = RxInt(0);
   var _trackingName = ''.obs;
@@ -19,6 +24,7 @@ class HomeController extends GetxController {
   var _nameFieldError = Rx<UIError>(UIError.noError);
   var _isValidFields = Rx<UIError>(UIError.invalidFields);
   var _packages = <Map<dynamic, dynamic>>[].obs;
+  var _locationData = LocationData.fromMap({}).obs;
 
   int get indexBottomBarOut => _indexBottomBar.value;
   Stream<int?> get indexBottomBarStream => _indexBottomBar.stream;
@@ -26,8 +32,12 @@ class HomeController extends GetxController {
   Stream<UIError?> get nameFieldErrorStream => _nameFieldError.stream;
   Stream<UIError?> get isValidFieldOut => _isValidFields.stream;
   List<Map<dynamic, dynamic>> get packages => _packages.toList();
+  LocationData get locationData => _locationData.value;
+
   @override
   void onInit() async {
+    _locationData.value = await location.getLocation();
+
     final _cache = await homeUseCases.cache.readData('cash');
     List<dynamic> packagesCache = _cache[0]['packages'];
     _packages.clear();
