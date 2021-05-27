@@ -45,6 +45,8 @@ class HomeController extends GetxController {
 
     final _cache = await homeUseCases.cache.readData('cash');
     List<dynamic> packagesCache = _cache[0]['packages'];
+    _themeMode.value = _cache[0]['setup']['themeMode'];
+    _notificationSetup.value = _cache[0]['setup']['notificationMode'];
     _packages.clear();
     packagesCache.forEach((element) {
       _packages.add(element);
