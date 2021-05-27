@@ -18,7 +18,7 @@ class SplashController extends GetxController {
   void onInit() async {
     await verifyLocationService();
     await cache.verifyCache();
-    Future.delayed(Duration(seconds: 2), () => jumpToPage('/home'));
+    jumpToPage('/home');
     super.onInit();
   }
 

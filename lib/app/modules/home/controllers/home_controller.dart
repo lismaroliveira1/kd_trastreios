@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
@@ -25,6 +26,8 @@ class HomeController extends GetxController {
   var _isValidFields = Rx<UIError>(UIError.invalidFields);
   var _packages = <Map<dynamic, dynamic>>[].obs;
   var _locationData = LocationData.fromMap({}).obs;
+  var _themeMode = 1.obs;
+  var _notificationSetup = 0.obs;
 
   int get indexBottomBarOut => _indexBottomBar.value;
   Stream<int?> get indexBottomBarStream => _indexBottomBar.stream;
@@ -33,6 +36,8 @@ class HomeController extends GetxController {
   Stream<UIError?> get isValidFieldOut => _isValidFields.stream;
   List<Map<dynamic, dynamic>> get packages => _packages.toList();
   LocationData get locationData => _locationData.value;
+  int get themeModeOut => _themeMode.value;
+  int get notificationSetupOut => _notificationSetup.value;
 
   @override
   void onInit() async {
@@ -103,5 +108,20 @@ class HomeController extends GetxController {
     } catch (err) {
       print(err);
     }
+  }
+
+  void changeThemeMode(int mode) {
+    switch (mode) {
+      case 0:
+        AdaptiveTheme.of(Get.context!).setDark();
+        break;
+      case 1:
+        AdaptiveTheme.of(Get.context!).setLight();
+        break;
+      case 2:
+        AdaptiveTheme.of(Get.context!).setSystem();
+        break;
+    }
+    _themeMode.value = mode;
   }
 }
