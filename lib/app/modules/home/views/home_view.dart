@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:animations/animations.dart';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,6 +8,8 @@ import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
 import 'package:kd_rastreios_cp/app/i18n/i18n.dart';
 import 'package:kd_rastreios_cp/app/modules/home/controllers/home_controller.dart';
 import 'package:timelines/timelines.dart';
+
+import './components/components.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller;
@@ -50,37 +51,9 @@ class HomeView extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: Obx(
-        () => BottomNavyBar(
-          selectedIndex: controller.indexBottomBarOut,
-          items: <BottomNavyBarItem>[
-            BottomNavyBarItem(
-              icon: Icon(Icons.track_changes),
-              title: Text(R.translations.inTransit),
-              activeColor: Colors.red,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.check),
-              title: Text(R.translations.completed),
-              activeColor: Colors.purpleAccent,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.map),
-              title: Text(
-                R.translations.nearbyAgencies,
-              ),
-              activeColor: Colors.pink,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.settings),
-              title: Text(R.translations.setup),
-              activeColor: Colors.blue,
-              textAlign: TextAlign.center,
-            ),
-          ],
-          onItemSelected: (int value) => controller.changeIndexBottomBar(value),
+        () => buildBottomNavyBar(
+          index: controller.indexBottomBarOut,
+          onItemSelected: (value) => controller.changeIndexBottomBar(value),
         ),
       ),
       body: Builder(
