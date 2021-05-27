@@ -110,7 +110,7 @@ class HomeController extends GetxController {
     }
   }
 
-  void changeThemeMode(int mode) {
+  void changeThemeMode(int mode) async {
     switch (mode) {
       case 0:
         AdaptiveTheme.of(Get.context!).setDark();
@@ -122,6 +122,7 @@ class HomeController extends GetxController {
         AdaptiveTheme.of(Get.context!).setSystem();
         break;
     }
+    await homeUseCases.setThemeMode(mode);
     _themeMode.value = mode;
   }
 }
