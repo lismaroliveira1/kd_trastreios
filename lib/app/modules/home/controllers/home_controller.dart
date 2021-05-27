@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
 import 'package:kd_rastreios_cp/app/modules/home/controllers/home_use_cases.dart';
 
 class HomeController extends GetxController {
   final HomeUseCases homeUseCases;
-  HomeController(this.homeUseCases);
+  final Completer<GoogleMapController> googleMapController;
+
+  HomeController(
+      {required this.homeUseCases, required this.googleMapController});
 
   var _indexBottomBar = RxInt(0);
   var _trackingName = ''.obs;
@@ -79,5 +85,13 @@ class HomeController extends GetxController {
     trackings.forEach((element) {
       _packages.add(element.toMap());
     });
+  }
+
+  void onMapComplete(GoogleMapController controller) {
+    try {
+      googleMapController.complete(controller);
+    } catch (err) {
+      print(err);
+    }
   }
 }

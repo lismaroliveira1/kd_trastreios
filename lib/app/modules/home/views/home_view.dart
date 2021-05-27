@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:animations/animations.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
 import 'package:kd_rastreios_cp/app/i18n/i18n.dart';
 import 'package:kd_rastreios_cp/app/modules/home/controllers/home_controller.dart';
@@ -10,7 +13,12 @@ import 'package:timelines/timelines.dart';
 class HomeView extends StatelessWidget {
   final HomeController controller;
   final PageController pageController;
-  HomeView(this.controller, this.pageController);
+  final Completer<GoogleMapController> googleMapController;
+  HomeView({
+    required this.controller,
+    required this.pageController,
+    required this.googleMapController,
+  });
   @override
   Widget build(BuildContext context) {
     void _hideKeyboard() {
@@ -78,7 +86,6 @@ class HomeView extends StatelessWidget {
       body: Builder(
         builder: (context) {
           controller.indexBottomBarStream.listen((view) {
-            print(view);
             pageController.jumpToPage(view!);
           });
           return PageView(
@@ -104,7 +111,15 @@ class HomeView extends StatelessWidget {
 
   Container buildAgenciesPage() {
     return Container(
-      color: Colors.pink,
+      child: GoogleMap(
+        mapType: MapType.hybrid,
+        initialCameraPosition: CameraPosition(
+          target: LatLng(37.42796133580664, -122.085749655962),
+          zoom: 14.4746,
+        ),
+        onMapCreated: (GoogleMapController mapController) =>
+            controller.onMapComplete(mapController),
+      ),
     );
   }
 

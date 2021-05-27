@@ -15,7 +15,10 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => HomeView(Get.find(), Get.find()),
+      page: () => HomeView(
+          controller: Get.find(),
+          pageController: Get.find(),
+          googleMapController: Get.find()),
       binding: HomeBinding(),
     ),
     GetPage(
