@@ -5,6 +5,8 @@ ThemeData makeAppDarkTheme() {
   final _primaryColor = Color.fromRGBO(35, 45, 72, 1);
   final _primaryColorDark = Color.fromRGBO(96, 0, 39, 1);
   final _primaryColorLight = Color.fromRGBO(188, 71, 123, 1);
+  final _backgroundColor = Color.fromRGBO(36, 37, 38, 1);
+
   final _accentColor = Colors.blueGrey[700];
   return ThemeData(
     primaryColor: _primaryColor,
@@ -12,7 +14,7 @@ ThemeData makeAppDarkTheme() {
     primaryColorLight: _primaryColorLight,
     brightness: Brightness.dark,
     accentColor: _accentColor,
-    backgroundColor: Colors.white,
+    backgroundColor: _backgroundColor,
     textTheme: TextTheme(
       headline1: GoogleFonts.itim(
         fontSize: 28,

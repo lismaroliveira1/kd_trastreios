@@ -64,9 +64,12 @@ class HomeView extends StatelessWidget {
             controller: pageController,
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
-              buildHomePage(controller.packages),
+              Obx(() => buildHomePage(controller.packages)),
               buildcompletedTrackingsPage(),
-              buildAgenciesPage(),
+              buildAgenciesPage(
+                latitude: controller.currentLatitudeOut,
+                longitude: controller.currentLongitudeOut,
+              ),
               buildSetupPage(
                 changeNotificationMode: (mode) =>
                     controller.changeNotificationMode(mode),
@@ -80,25 +83,6 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
-
-  Widget buildAgenciesPage() {
-    return Obx(
-      () => Container(
-        child: GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(
-            target: LatLng(
-              controller.currentLatitudeOut,
-              controller.currentLongitudeOut,
-            ),
-            zoom: 14.4746,
-          ),
-        ),
-      ),
-    );
-  }
-
-  
 
   Dialog buildNewTrackingDialog(Function hideKeyboard) {
     return Dialog(
