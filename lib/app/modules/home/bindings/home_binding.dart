@@ -10,6 +10,7 @@ class HomeBinding extends Bindings {
       () => HomeController(
         homeUseCases: HomeUseCases(client: Get.find(), cache: Get.find()),
         googleMapController: Get.find(),
+        flutterLocalNotificationsPlugin: Get.find(),
       ),
     );
   }

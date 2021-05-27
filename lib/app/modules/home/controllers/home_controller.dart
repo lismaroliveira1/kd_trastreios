@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:background_fetch/background_fetch.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,10 +12,12 @@ import 'package:kd_rastreios_cp/app/modules/home/controllers/home_use_cases.dart
 class HomeController extends GetxController {
   final HomeUseCases homeUseCases;
   final Completer<GoogleMapController> googleMapController;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   HomeController({
     required this.homeUseCases,
     required this.googleMapController,
+    required this.flutterLocalNotificationsPlugin,
   });
 
   var _indexBottomBar = RxInt(0);
@@ -43,9 +46,6 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     final _cache = await homeUseCases.cache.readData('cash');
-    final location = await Geolocator.getCurrentPosition();
-    _currentLatitude.value = location.latitude;
-    _currentLongitude.value = location.longitude;
 
     List<dynamic> packagesCache = _cache[0]['packages'];
     _themeMode.value = _cache[0]['setup']['themeMode'];
@@ -55,6 +55,10 @@ class HomeController extends GetxController {
       _packages.add(element);
     });
 
+    final location = await Geolocator.getCurrentPosition();
+    _currentLatitude.value = location.latitude;
+    _currentLongitude.value = location.longitude;
+    sendNofication();
     initPlatformState();
     super.onInit();
   }
@@ -146,7 +150,7 @@ class HomeController extends GetxController {
           forceAlarmManager: false,
           stopOnTerminate: false,
           startOnBoot: true,
-          enableHeadless: false,
+          enableHeadless: true,
           requiresBatteryNotLow: false,
           requiresCharging: false,
           requiresStorageNotLow: false,
@@ -182,5 +186,19 @@ class HomeController extends GetxController {
   void _onBackgroundFetchTimeout(String taskId) {
     print("[BackgroundFetch] TIMEOUT: $taskId");
     BackgroundFetch.finish(taskId);
+  }
+
+  void sendNofication() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+            'your channel id', 'your channel name', 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: false);
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'plain title', 'plain body', platformChannelSpecifics,
+        payload: 'item x');
   }
 }

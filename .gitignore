@@ -23,6 +23,8 @@
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
+**/android/app/src/main/res/values
+.android/app/src/main/res/values/strings.xml
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -44,3 +46,4 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+android/app/src/main/res/values/strings.xml

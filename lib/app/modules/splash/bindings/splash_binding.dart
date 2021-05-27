@@ -8,6 +8,7 @@ class SplashBinding extends Bindings {
     Get.lazyPut(
       () => SplashController(
         cache: Get.find(),
+        flutterLocalNotificationsPlugin: Get.find(),
       ),
     );
   }

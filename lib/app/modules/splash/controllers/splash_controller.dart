@@ -1,11 +1,14 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:kd_rastreios_cp/app/storage/cache.dart';
 
 class SplashController extends GetxController {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   final Cache cache;
   SplashController({
     required this.cache,
+    required this.flutterLocalNotificationsPlugin,
   });
 
   var _jumtToPage = Rx<String>('');
@@ -15,6 +18,7 @@ class SplashController extends GetxController {
   void onInit() async {
     await verifyLocationService();
     await cache.verifyCache();
+
     jumpToPage('/home');
     super.onInit();
   }
@@ -52,5 +56,20 @@ class SplashController extends GetxController {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
+  }
+
+  Future<void> initialyzeNotificationControl() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (payload) => selectNotification(payload!));
+  }
+
+  Future selectNotification(String payload) async {
+    print('notification payload: $payload');
   }
 }

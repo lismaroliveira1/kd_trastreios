@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:kd_rastreios_cp/app/application_binding.dart';
+import 'package:kd_rastreios_cp/app/helpers/helpers.dart';
 import 'package:kd_rastreios_cp/app/themes/make_app_dark_theme.dart';
 import 'package:kd_rastreios_cp/app/themes/make_app_light_theme.dart';
 
@@ -28,16 +29,4 @@ void main() {
     ),
   );
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
-}
-
-void backgroundFetchHeadlessTask(HeadlessTask task) async {
-  String taskId = task.taskId;
-  bool isTimeout = task.timeout;
-  if (isTimeout) {
-    BackgroundFetch.finish(taskId);
-    return;
-  }
-  print('[BackgroundFetch] Headless event received.');
-  print('ok');
-  BackgroundFetch.finish(taskId);
 }

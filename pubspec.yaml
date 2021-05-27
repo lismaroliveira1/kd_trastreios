@@ -18,6 +18,8 @@ dependencies:
   google_fonts:
   background_fetch: ^1.0.0-nullsafety.2
   geolocator:
+  flutter_local_notifications:
+  provider:
 
   flutter: 
     sdk: flutter
