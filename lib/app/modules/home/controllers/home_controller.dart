@@ -146,25 +146,28 @@ class HomeController extends GetxController {
           forceAlarmManager: false,
           stopOnTerminate: false,
           startOnBoot: true,
-          enableHeadless: true,
+          enableHeadless: false,
           requiresBatteryNotLow: false,
           requiresCharging: false,
           requiresStorageNotLow: false,
           requiresDeviceIdle: false,
-          requiredNetworkType: NetworkType.NONE,
+          requiredNetworkType: NetworkType.ANY,
         ),
         _onBackgroundFetch,
         _onBackgroundFetchTimeout,
       );
       print('[BackgroundFetch] configure success: $status');
 
-      BackgroundFetch.scheduleTask(TaskConfig(
+      BackgroundFetch.scheduleTask(
+        TaskConfig(
           taskId: "com.transistorsoft.customtask",
-          delay: 10000,
-          periodic: false,
+          delay: 100,
+          periodic: true,
           forceAlarmManager: true,
           stopOnTerminate: false,
-          enableHeadless: true));
+          enableHeadless: true,
+        ),
+      );
     } catch (e) {
       print("[BackgroundFetch] configure ERROR: $e");
     }
