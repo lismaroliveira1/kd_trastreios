@@ -6,8 +6,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
-import 'package:kd_rastreios_cp/app/modules/home/controllers/home_use_cases.dart';
+
+import '../../../helpers/helpers.dart';
+import '../../../modules/home/home.dart';
 
 class HomeController extends GetxController {
   final HomeUseCases homeUseCases;
@@ -58,7 +59,6 @@ class HomeController extends GetxController {
     final location = await Geolocator.getCurrentPosition();
     _currentLatitude.value = location.latitude;
     _currentLongitude.value = location.longitude;
-    sendNofication();
     initPlatformState();
     super.onInit();
   }

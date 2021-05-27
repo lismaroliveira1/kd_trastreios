@@ -6,8 +6,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
-import 'package:kd_rastreios_cp/app/storage/cache.dart';
-import 'package:kd_rastreios_cp/app/themes/make_app_light_theme.dart';
+
+import '../app/storage/cache.dart';
+import '../app/themes/make_app_light_theme.dart';
 
 class ApplicationBinding extends Bindings {
   @override

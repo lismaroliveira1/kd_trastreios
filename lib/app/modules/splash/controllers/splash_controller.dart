@@ -1,7 +1,8 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:kd_rastreios_cp/app/storage/cache.dart';
+
+import '../../../storage/cache.dart';
 
 class SplashController extends GetxController {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
