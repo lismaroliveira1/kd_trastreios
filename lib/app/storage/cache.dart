@@ -41,7 +41,8 @@ class Cache {
         {
           'packages': [],
           'setup': {
-            'themeMode': 3,
+            'themeMode': 2,
+            'notificationMode': 1,
           }
         }
       ];

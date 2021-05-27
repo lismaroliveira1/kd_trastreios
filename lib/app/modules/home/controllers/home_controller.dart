@@ -125,4 +125,9 @@ class HomeController extends GetxController {
     await homeUseCases.setThemeMode(mode);
     _themeMode.value = mode;
   }
+
+  void changeNotificationMode(int mode) async {
+    await homeUseCases.setNotificationMode(mode);
+    _notificationSetup.value = mode;
+  }
 }

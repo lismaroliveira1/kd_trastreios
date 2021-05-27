@@ -131,21 +131,21 @@ class HomeView extends StatelessWidget {
               SwitchListTile(
                 title: Text("Ativar todas as notificatificações"),
                 subtitle: Text("Receba notificações em todos os eventos"),
-                value: true,
-                onChanged: (bool value) {},
+                value: controller.notificationSetupOut == 0,
+                onChanged: (_) => controller.changeNotificationMode(0),
               ),
               SwitchListTile(
                 title: Text("Ativar notificações parcialmente"),
                 subtitle:
                     Text("Receber notificações apenas nos ultimos eventos"),
-                value: true,
-                onChanged: (bool value) {},
+                value: controller.notificationSetupOut == 1,
+                onChanged: (_) => controller.changeNotificationMode(1),
               ),
               SwitchListTile(
                 title: Text("Desativar notificações"),
                 subtitle: Text("Não receber notificações"),
-                value: true,
-                onChanged: (bool value) {},
+                value: controller.notificationSetupOut == 2,
+                onChanged: (_) => controller.changeNotificationMode(2),
               ),
             ],
           ),

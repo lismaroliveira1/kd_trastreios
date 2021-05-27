@@ -46,4 +46,11 @@ class HomeUseCases {
     print(_cache[0]['setup']);
     cache.writeData(jsonEncode(_cache), path: 'cash');
   }
+
+  Future<void> setNotificationMode(int mode) async {
+    final _cache = await cache.readData('cash');
+    _cache[0]['setup']['notificationMode'] = mode;
+    print(_cache[0]['setup']);
+    cache.writeData(jsonEncode(_cache), path: 'cash');
+  }
 }
