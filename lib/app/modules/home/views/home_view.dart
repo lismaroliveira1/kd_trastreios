@@ -7,9 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
 import 'package:kd_rastreios_cp/app/i18n/i18n.dart';
 import 'package:kd_rastreios_cp/app/modules/home/controllers/home_controller.dart';
-import 'package:timelines/timelines.dart';
 
 import './components/components.dart';
+import './pages/pages.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller;
@@ -24,7 +24,6 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     void _hideKeyboard() {
       final currentFocus = FocusScope.of(context);
-
       if (!currentFocus.hasPrimaryFocus) {
         currentFocus.unfocus();
       }
@@ -65,64 +64,19 @@ class HomeView extends StatelessWidget {
             controller: pageController,
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
-              buildHomePage(),
+              buildHomePage(controller.packages),
               buildcompletedTrackingsPage(),
               buildAgenciesPage(),
-              buildSetupPage(),
+              buildSetupPage(
+                changeNotificationMode: (mode) =>
+                    controller.changeNotificationMode(mode),
+                changeThemeMode: (mode) => controller.changeThemeMode(mode),
+                notificatioMode: controller.notificationSetupOut,
+                themeMode: controller.themeModeOut,
+              ),
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget buildSetupPage() {
-    return Obx(
-      () => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SwitchListTile(
-                title: Text("Tema escuro"),
-                subtitle: Text("Utilize o tema escuro no aplicativo"),
-                value: controller.themeModeOut == 0,
-                onChanged: (_) => controller.changeThemeMode(0),
-              ),
-              SwitchListTile(
-                title: Text("Tema claro"),
-                subtitle: Text("Utilize o tema escuro no aplicativo"),
-                value: controller.themeModeOut == 1,
-                onChanged: (_) => controller.changeThemeMode(1),
-              ),
-              SwitchListTile(
-                title: Text("Tema do sistema"),
-                subtitle: Text("Utilize o mesmo tema que o sistema"),
-                value: controller.themeModeOut == 2,
-                onChanged: (_) => controller.changeThemeMode(2),
-              ),
-              SwitchListTile(
-                title: Text("Ativar todas as notificatificações"),
-                subtitle: Text("Receba notificações em todos os eventos"),
-                value: controller.notificationSetupOut == 0,
-                onChanged: (_) => controller.changeNotificationMode(0),
-              ),
-              SwitchListTile(
-                title: Text("Ativar notificações parcialmente"),
-                subtitle:
-                    Text("Receber notificações apenas nos ultimos eventos"),
-                value: controller.notificationSetupOut == 1,
-                onChanged: (_) => controller.changeNotificationMode(1),
-              ),
-              SwitchListTile(
-                title: Text("Desativar notificações"),
-                subtitle: Text("Não receber notificações"),
-                value: controller.notificationSetupOut == 2,
-                onChanged: (_) => controller.changeNotificationMode(2),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -144,29 +98,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget buildHomePage() {
-    return Obx(
-      () => ListView(
-        children: controller.packages.map(
-          (package) {
-            return OpenContainer(
-              closedBuilder: (BuildContext context, void Function() action) {
-                return buildClosedContainer(package);
-              },
-              openBuilder: (BuildContext context,
-                  void Function({Object? returnValue}) action) {
-                return buildOpenedContainer(package, context);
-              },
-            );
-          },
-        ).toList(),
-      ),
-    );
-  }
-
-  Widget buildcompletedTrackingsPage() {
-    return Container();
-  }
+  
 
   Dialog buildNewTrackingDialog(Function hideKeyboard) {
     return Dialog(
