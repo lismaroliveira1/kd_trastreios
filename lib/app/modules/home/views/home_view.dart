@@ -161,13 +161,11 @@ class HomeView extends StatelessWidget {
           mapType: MapType.normal,
           initialCameraPosition: CameraPosition(
             target: LatLng(
-              controller.locationData.latitude!,
-              controller.locationData.longitude!,
+              controller.currentLatitudeOut,
+              controller.currentLongitudeOut,
             ),
             zoom: 14.4746,
           ),
-          onMapCreated: (GoogleMapController mapController) =>
-              controller.onMapComplete(mapController),
         ),
       ),
     );

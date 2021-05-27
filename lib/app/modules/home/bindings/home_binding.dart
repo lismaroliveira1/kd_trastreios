@@ -10,7 +10,6 @@ class HomeBinding extends Bindings {
       () => HomeController(
         homeUseCases: HomeUseCases(client: Get.find(), cache: Get.find()),
         googleMapController: Get.find(),
-        location: Get.find(),
       ),
     );
   }

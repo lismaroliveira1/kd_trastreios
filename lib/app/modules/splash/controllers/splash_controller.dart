@@ -1,15 +1,12 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:kd_rastreios_cp/app/storage/cache.dart';
-import 'package:location/location.dart';
 
 class SplashController extends GetxController {
   final Cache cache;
-  final Location location;
-  SplashController({required this.cache, required this.location});
-
-  var _locationServiceEnable = false;
-  var _permissionLocationStatus = PermissionStatus.denied;
-  var _locationData = LocationData.fromMap({}).obs;
+  SplashController({
+    required this.cache,
+  });
 
   var _jumtToPage = Rx<String>('');
   Stream<String?> get jumpToPageStream => _jumtToPage.stream;
@@ -35,22 +32,25 @@ class SplashController extends GetxController {
   }
 
   Future<void> verifyLocationService() async {
-    _locationServiceEnable = await location.serviceEnabled();
-    if (!_locationServiceEnable) {
-      _locationServiceEnable = await location.requestService();
-      if (!_locationServiceEnable) {
-        return;
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
       }
     }
 
-    _permissionLocationStatus = await location.hasPermission();
-    if (_permissionLocationStatus == PermissionStatus.denied) {
-      _permissionLocationStatus = await location.requestPermission();
-      if (_permissionLocationStatus != PermissionStatus.granted) {
-        return;
-      }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
-
-    _locationData.value = await location.getLocation();
   }
 }

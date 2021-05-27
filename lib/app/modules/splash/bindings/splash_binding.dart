@@ -8,7 +8,6 @@ class SplashBinding extends Bindings {
     Get.lazyPut(
       () => SplashController(
         cache: Get.find(),
-        location: Get.find(),
       ),
     );
   }

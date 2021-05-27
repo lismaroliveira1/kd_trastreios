@@ -14,10 +14,11 @@ dependencies:
   animations:
   timelines:
   google_maps_flutter:
-  location:
   adaptive_theme:
   google_fonts:
-  
+  background_fetch: ^1.0.0-nullsafety.2
+  geolocator:
+
   flutter: 
     sdk: flutter
 

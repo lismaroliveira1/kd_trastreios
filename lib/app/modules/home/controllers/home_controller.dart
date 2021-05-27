@@ -1,21 +1,20 @@
 import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:background_fetch/background_fetch.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
 import 'package:kd_rastreios_cp/app/modules/home/controllers/home_use_cases.dart';
-import 'package:location/location.dart';
 
 class HomeController extends GetxController {
   final HomeUseCases homeUseCases;
   final Completer<GoogleMapController> googleMapController;
-  final Location location;
 
   HomeController({
     required this.homeUseCases,
     required this.googleMapController,
-    required this.location,
   });
 
   var _indexBottomBar = RxInt(0);
@@ -25,9 +24,10 @@ class HomeController extends GetxController {
   var _nameFieldError = Rx<UIError>(UIError.noError);
   var _isValidFields = Rx<UIError>(UIError.invalidFields);
   var _packages = <Map<dynamic, dynamic>>[].obs;
-  var _locationData = LocationData.fromMap({}).obs;
   var _themeMode = 1.obs;
   var _notificationSetup = 0.obs;
+  var _currentLatitude = 1.0.obs;
+  var _currentLongitude = 1.0.obs;
 
   int get indexBottomBarOut => _indexBottomBar.value;
   Stream<int?> get indexBottomBarStream => _indexBottomBar.stream;
@@ -35,15 +35,18 @@ class HomeController extends GetxController {
   Stream<UIError?> get nameFieldErrorStream => _nameFieldError.stream;
   Stream<UIError?> get isValidFieldOut => _isValidFields.stream;
   List<Map<dynamic, dynamic>> get packages => _packages.toList();
-  LocationData get locationData => _locationData.value;
   int get themeModeOut => _themeMode.value;
   int get notificationSetupOut => _notificationSetup.value;
+  double get currentLatitudeOut => _currentLatitude.value;
+  double get currentLongitudeOut => _currentLongitude.value;
 
   @override
   void onInit() async {
-    _locationData.value = await location.getLocation();
-
     final _cache = await homeUseCases.cache.readData('cash');
+    final location = await Geolocator.getCurrentPosition();
+    _currentLatitude.value = location.latitude;
+    _currentLongitude.value = location.longitude;
+
     List<dynamic> packagesCache = _cache[0]['packages'];
     _themeMode.value = _cache[0]['setup']['themeMode'];
     _notificationSetup.value = _cache[0]['setup']['notificationMode'];
@@ -51,6 +54,8 @@ class HomeController extends GetxController {
     packagesCache.forEach((element) {
       _packages.add(element);
     });
+
+    initPlatformState();
     super.onInit();
   }
 
@@ -131,5 +136,48 @@ class HomeController extends GetxController {
   void changeNotificationMode(int mode) async {
     await homeUseCases.setNotificationMode(mode);
     _notificationSetup.value = mode;
+  }
+
+  Future<void> initPlatformState() async {
+    try {
+      var status = await BackgroundFetch.configure(
+        BackgroundFetchConfig(
+          minimumFetchInterval: 15,
+          forceAlarmManager: false,
+          stopOnTerminate: false,
+          startOnBoot: true,
+          enableHeadless: true,
+          requiresBatteryNotLow: false,
+          requiresCharging: false,
+          requiresStorageNotLow: false,
+          requiresDeviceIdle: false,
+          requiredNetworkType: NetworkType.NONE,
+        ),
+        _onBackgroundFetch,
+        _onBackgroundFetchTimeout,
+      );
+      print('[BackgroundFetch] configure success: $status');
+
+      BackgroundFetch.scheduleTask(TaskConfig(
+          taskId: "com.transistorsoft.customtask",
+          delay: 10000,
+          periodic: false,
+          forceAlarmManager: true,
+          stopOnTerminate: false,
+          enableHeadless: true));
+    } catch (e) {
+      print("[BackgroundFetch] configure ERROR: $e");
+    }
+  }
+
+  void _onBackgroundFetch(String taskId) async {
+    print("[BackgroundFetch] Event received: $taskId");
+
+    BackgroundFetch.finish(taskId);
+  }
+
+  void _onBackgroundFetchTimeout(String taskId) {
+    print("[BackgroundFetch] TIMEOUT: $taskId");
+    BackgroundFetch.finish(taskId);
   }
 }
