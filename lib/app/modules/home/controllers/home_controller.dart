@@ -34,11 +34,13 @@ class HomeController extends GetxController {
   var _notificationSetup = 0.obs;
   var _currentLatitude = 1.0.obs;
   var _currentLongitude = 1.0.obs;
+  var _mainError = Rx<UIError>(UIError.noError);
 
   int get indexBottomBarOut => _indexBottomBar.value;
   Stream<int?> get indexBottomBarStream => _indexBottomBar.stream;
   Stream<UIError?> get codeFieldErrorStream => _codeFieldError.stream;
   Stream<UIError?> get nameFieldErrorStream => _nameFieldError.stream;
+  Stream<UIError?> get mainErrorStream => _mainError.stream;
   Stream<UIError?> get isValidFieldOut => _isValidFields.stream;
   List<Map<dynamic, dynamic>> get packages => _packages.toList();
   int get themeModeOut => _themeMode.value;
@@ -63,15 +65,7 @@ class HomeController extends GetxController {
     _currentLatitude.value = location.latitude;
     _currentLongitude.value = location.longitude;
     initPlatformState();
-    await Flushbar(
-      dismissDirection: FlushbarDismissDirection.VERTICAL,
-      flushbarPosition: FlushbarPosition.BOTTOM,
-      borderRadius: BorderRadius.all(Radius.circular(8)),
-      title: 'Hey Ninja',
-      message:
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
-      duration: Duration(seconds: 3),
-    ).show(Get.context!);
+
     super.onInit();
   }
 
@@ -90,9 +84,9 @@ class HomeController extends GetxController {
   void validateCode(String value) {
     _trackingCode.value = value;
     if (value.length == 0) _isValidFields.value = UIError.invalidFields;
-    value.length <= 10
-        ? _codeFieldError.value = UIError.invalidCode
-        : _codeFieldError.value = UIError.noError;
+    value.length == 13
+        ? _codeFieldError.value = UIError.noError
+        : _codeFieldError.value = UIError.invalidCode;
     validateButton();
   }
 
@@ -115,14 +109,41 @@ class HomeController extends GetxController {
   }
 
   Future<void> getPackage() async {
-    final trackings = await homeUseCases.getPackages(
-      code: _trackingCode.value,
-      name: _trackingName.value,
-    );
-    _packages.clear();
-    trackings.forEach((element) {
-      _packages.add(element.toMap());
-    });
+    try {
+      final trackings = await homeUseCases.getPackages(
+        code: _trackingCode.value,
+        name: _trackingName.value,
+      );
+      _packages.clear();
+      trackings.forEach((element) {
+        _packages.add(element.toMap());
+      });
+    } on HttpError catch (error) {
+      switch (error) {
+        case HttpError.badRequest:
+          _mainError.value = UIError.badRequest;
+          break;
+        case HttpError.forbidden:
+          _mainError.value = UIError.forbidden;
+          break;
+        case HttpError.notFound:
+          _mainError.value = UIError.notFound;
+          break;
+        case HttpError.unauthorized:
+          _mainError.value = UIError.unauthorized;
+          break;
+        case HttpError.unexpected:
+          _mainError.value = UIError.unexpected;
+          break;
+        case HttpError.serverError:
+          _mainError.value = UIError.serverError;
+          break;
+        case HttpError.noResponse:
+          _mainError.value = UIError.noResponse;
+          break;
+      }
+    }
+    _mainError.value = UIError.noError;
   }
 
   void onMapComplete(GoogleMapController controller) {
@@ -214,5 +235,19 @@ class HomeController extends GetxController {
     await flutterLocalNotificationsPlugin.show(
         0, 'plain title', 'plain body', platformChannelSpecifics,
         payload: 'item x');
+  }
+
+  Future<void> showFlushBar({
+    required String title,
+    required String message,
+  }) async {
+    await Flushbar(
+      dismissDirection: FlushbarDismissDirection.VERTICAL,
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+      title: title,
+      message: message,
+      duration: Duration(seconds: 3),
+    ).show(Get.context!);
   }
 }

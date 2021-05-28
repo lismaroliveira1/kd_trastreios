@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:kd_rastreios_cp/app/data/package_data.dart';
 import 'package:kd_rastreios_cp/app/data/tracking_data.dart';
+import 'package:kd_rastreios_cp/app/helpers/http_error.dart';
 import 'package:kd_rastreios_cp/app/storage/cache.dart';
 
 class HomeUseCases {
@@ -18,25 +19,46 @@ class HomeUseCases {
     final url =
         'https://api.rastrearpedidos.com.br/api/rastreio/v1?codigo=$code';
     final response = await client.get(Uri.parse(url));
-    final responseBody = jsonDecode(response.body);
-    for (LinkedHashMap tracking in responseBody) {
-      _trackings.add(TrackingData.fromLinkedHashMap(tracking));
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200) {
+      try {
+        final responseBody = jsonDecode(response.body);
+        for (LinkedHashMap tracking in responseBody) {
+          _trackings.add(TrackingData.fromLinkedHashMap(tracking));
+        }
+        final newPackage = PackageData(
+          code: code,
+          name: name,
+          trackings: _trackings,
+          createAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        final _cache = await cache.readData('cash');
+        List<dynamic> packagesCache = _cache[0]['packages'];
+        packagesCache.add(newPackage.toMap());
+        _cache[0]['packages'] = packagesCache;
+        cache.writeData(jsonEncode(_cache), path: 'cash');
+        packagesCache.forEach((element) {
+          _packages.add(PackageData.fromMap(element));
+        });
+      } catch (error) {
+        throw HttpError.noResponse;
+      }
+    } else {
+      switch (response.statusCode) {
+        case 400:
+          throw HttpError.badRequest;
+        case 401:
+          throw HttpError.unauthorized;
+        case 403:
+          throw HttpError.unauthorized;
+        case 404:
+          throw HttpError.notFound;
+        case 500:
+          throw HttpError.serverError;
+      }
     }
-    final newPackage = PackageData(
-      code: code,
-      name: name,
-      trackings: _trackings,
-      createAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-    final _cache = await cache.readData('cash');
-    List<dynamic> packagesCache = _cache[0]['packages'];
-    packagesCache.add(newPackage.toMap());
-    _cache[0]['packages'] = packagesCache;
-    cache.writeData(jsonEncode(_cache), path: 'cash');
-    packagesCache.forEach((element) {
-      _packages.add(PackageData.fromMap(element));
-    });
     return _packages;
   }
 

@@ -4,6 +4,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:kd_rastreios_cp/app/helpers/helpers.dart';
 
 import '../controllers/controllers.dart';
 import './components/components.dart';
@@ -65,6 +66,14 @@ class HomeView extends StatelessWidget {
         builder: (context) {
           controller.indexBottomBarStream.listen((view) {
             pageController.jumpToPage(view!);
+          });
+          controller.mainErrorStream.listen((uiError) {
+            if (uiError != UIError.noError) {
+              controller.showFlushBar(
+                title: 'Erro',
+                message: uiError!.description,
+              );
+            }
           });
           return PageView(
             controller: pageController,

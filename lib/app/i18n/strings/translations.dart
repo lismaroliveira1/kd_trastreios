@@ -1,5 +1,9 @@
 abstract class Translations {
+  String get badRequest;
+  String get notFound;
+  String get forbidden;
   String get newTrackingPackage;
+  String get unauthorized;
   String get tranckindCode;
   String get packageName;
   String get getTracking;
@@ -9,5 +13,8 @@ abstract class Translations {
   String get nearbyAgencies;
   String get setup;
   String get invalidName;
+  String get unexpected;
   String get invalidCode;
+  String get serverError;
+  String get noResponse;
 }

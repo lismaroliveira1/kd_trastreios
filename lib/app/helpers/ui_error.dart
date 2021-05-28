@@ -4,7 +4,14 @@ enum UIError {
   invalidCode,
   invalidFields,
   invalidName,
+  unauthorized,
+  badRequest,
+  notFound,
+  forbidden,
+  unexpected,
+  serverError,
   noError,
+  noResponse,
 }
 
 extension UIErrorExtension on UIError {
@@ -14,6 +21,20 @@ extension UIErrorExtension on UIError {
         return R.translations.invalidName;
       case UIError.invalidCode:
         return R.translations.invalidCode;
+      case UIError.badRequest:
+        return R.translations.badRequest;
+      case UIError.forbidden:
+        return R.translations.forbidden;
+      case UIError.notFound:
+        return R.translations.notFound;
+      case UIError.unauthorized:
+        return R.translations.unauthorized;
+      case UIError.unexpected:
+        return R.translations.unexpected;
+      case UIError.unexpected:
+        return R.translations.serverError;
+      case UIError.noResponse:
+        return R.translations.noResponse;
       default:
         return '';
     }
