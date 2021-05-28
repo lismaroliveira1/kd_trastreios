@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:background_fetch/background_fetch.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -21,7 +23,7 @@ class HomeController extends GetxController {
     required this.flutterLocalNotificationsPlugin,
   });
 
-  var _indexBottomBar = RxInt(0);
+  var _indexBottomBar = Rx<int>(0);
   var _trackingName = ''.obs;
   var _trackingCode = ''.obs;
   var _codeFieldError = Rx<UIError>(UIError.noError);
@@ -49,6 +51,7 @@ class HomeController extends GetxController {
     final _cache = await homeUseCases.cache.readData('cash');
 
     List<dynamic> packagesCache = _cache[0]['packages'];
+    print(_cache[0]['setup']['themeMode']);
     _themeMode.value = _cache[0]['setup']['themeMode'];
     _notificationSetup.value = _cache[0]['setup']['notificationMode'];
     _packages.clear();
@@ -60,6 +63,15 @@ class HomeController extends GetxController {
     _currentLatitude.value = location.latitude;
     _currentLongitude.value = location.longitude;
     initPlatformState();
+    await Flushbar(
+      dismissDirection: FlushbarDismissDirection.VERTICAL,
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+      title: 'Hey Ninja',
+      message:
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+      duration: Duration(seconds: 3),
+    ).show(Get.context!);
     super.onInit();
   }
 
@@ -122,6 +134,7 @@ class HomeController extends GetxController {
   }
 
   void changeThemeMode(int mode) async {
+    _indexBottomBar.value = 3;
     switch (mode) {
       case 0:
         AdaptiveTheme.of(Get.context!).setDark();
@@ -138,6 +151,7 @@ class HomeController extends GetxController {
   }
 
   void changeNotificationMode(int mode) async {
+    _indexBottomBar.value = 3;
     await homeUseCases.setNotificationMode(mode);
     _notificationSetup.value = mode;
   }

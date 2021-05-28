@@ -4,10 +4,8 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:kd_rastreios_cp/app/helpers/ui_error.dart';
-import 'package:kd_rastreios_cp/app/i18n/i18n.dart';
-import 'package:kd_rastreios_cp/app/modules/home/controllers/home_controller.dart';
 
+import '../controllers/controllers.dart';
 import './components/components.dart';
 import './pages/pages.dart';
 
@@ -43,7 +41,15 @@ class HomeView extends StatelessWidget {
                   transitionDuration: Duration(milliseconds: 600),
                   reverseTransitionDuration: Duration(milliseconds: 250),
                 ),
-                builder: (context) => buildNewTrackingDialog(_hideKeyboard),
+                builder: (context) => buildNewTrackingDialog(
+                  getTrackings: () => controller.getPackage(),
+                  hideKeyboard: _hideKeyboard,
+                  nameFieldErrorStream: controller.nameFieldErrorStream,
+                  uiErrorStream: controller.isValidFieldOut,
+                  validateName: (value) => controller.validateName(value),
+                  codeFieldErrorStream: controller.codeFieldErrorStream,
+                  validateCode: (value) => controller.validateCode(value),
+                ),
               );
             },
           ),
@@ -66,102 +72,25 @@ class HomeView extends StatelessWidget {
             children: <Widget>[
               Obx(() => buildHomePage(controller.packages)),
               buildcompletedTrackingsPage(),
-              buildAgenciesPage(
-                latitude: controller.currentLatitudeOut,
-                longitude: controller.currentLongitudeOut,
+              Obx(
+                () => buildAgenciesPage(
+                  latitude: controller.currentLatitudeOut,
+                  longitude: controller.currentLongitudeOut,
+                ),
               ),
-              buildSetupPage(
-                changeNotificationMode: (mode) =>
-                    controller.changeNotificationMode(mode),
-                changeThemeMode: (mode) => controller.changeThemeMode(mode),
-                notificatioMode: controller.notificationSetupOut,
-                themeMode: controller.themeModeOut,
+              Obx(
+                () => buildSetupPage(
+                  changeNotificationMode: (mode) =>
+                      controller.changeNotificationMode(mode),
+                  changeThemeMode: (mode) => controller.changeThemeMode(mode),
+                  notificatioMode: controller.notificationSetupOut,
+                  themeMode: controller.themeModeOut,
+                ),
               ),
             ],
           );
         },
       ),
     );
-  }
-
-  Dialog buildNewTrackingDialog(Function hideKeyboard) {
-    return Dialog(
-      child: InkWell(
-        onTap: () => hideKeyboard(),
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Container(
-            height: 240,
-            width: 300,
-            color: Colors.white,
-            child: Column(
-              children: <Widget>[
-                Text(R.translations.newTrackingPackage),
-                Spacer(),
-                buildCodeTextField(),
-                buildNameTextField(),
-                Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    buildTrackingButton(),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(R.translations.cancel),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  StreamBuilder<UIError?> buildTrackingButton() {
-    return StreamBuilder<UIError?>(
-      stream: controller.isValidFieldOut,
-      builder: (context, snapshot) {
-        return TextButton(
-          onPressed: snapshot.data == UIError.noError
-              ? () => controller.getPackage()
-              : null,
-          child: Text(R.translations.getTracking),
-        );
-      },
-    );
-  }
-
-  StreamBuilder<UIError?> buildNameTextField() {
-    return StreamBuilder<UIError?>(
-        stream: controller.nameFieldErrorStream,
-        builder: (context, snapshot) {
-          return TextFormField(
-            onChanged: (value) => controller.validateName(value),
-            decoration: InputDecoration(
-              labelText: R.translations.packageName,
-              errorText: snapshot.data == UIError.noError
-                  ? null
-                  : snapshot.data?.description,
-            ),
-          );
-        });
-  }
-
-  StreamBuilder<UIError?> buildCodeTextField() {
-    return StreamBuilder<UIError?>(
-        stream: controller.codeFieldErrorStream,
-        builder: (context, snapshot) {
-          return TextFormField(
-            onChanged: (value) => controller.validateCode(value),
-            decoration: InputDecoration(
-              labelText: R.translations.tranckindCode,
-              errorText: snapshot.data == UIError.noError
-                  ? null
-                  : snapshot.data?.description,
-            ),
-          );
-        });
   }
 }
