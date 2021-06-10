@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,7 +25,7 @@ class HomeController extends GetxController {
     required this.flutterLocalNotificationsPlugin,
   });
 
-  var _indexBottomBar = Rx<int>(0);
+  var _indexBottomBar = Rx<int>(10);
   var _trackingName = ''.obs;
   var _trackingCode = ''.obs;
   var _codeFieldError = Rx<UIError>(UIError.noError);
@@ -35,6 +37,7 @@ class HomeController extends GetxController {
   var _currentLatitude = 1.0.obs;
   var _currentLongitude = 1.0.obs;
   var _mainError = Rx<UIError>(UIError.noError);
+  var _isLoading = Rx<bool>(false);
 
   int get indexBottomBarOut => _indexBottomBar.value;
   Stream<int?> get indexBottomBarStream => _indexBottomBar.stream;
@@ -42,6 +45,7 @@ class HomeController extends GetxController {
   Stream<UIError?> get nameFieldErrorStream => _nameFieldError.stream;
   Stream<UIError?> get mainErrorStream => _mainError.stream;
   Stream<UIError?> get isValidFieldOut => _isValidFields.stream;
+  Stream<bool?> get isLoadingOut => _isLoading.stream;
   List<Map<dynamic, dynamic>> get packages => _packages.toList();
   int get themeModeOut => _themeMode.value;
   int get notificationSetupOut => _notificationSetup.value;
@@ -51,9 +55,7 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     final _cache = await homeUseCases.cache.readData('cash');
-
     List<dynamic> packagesCache = _cache[0]['packages'];
-    print(_cache[0]['setup']['themeMode']);
     _themeMode.value = _cache[0]['setup']['themeMode'];
     _notificationSetup.value = _cache[0]['setup']['notificationMode'];
     _packages.clear();
@@ -62,8 +64,10 @@ class HomeController extends GetxController {
     });
 
     final location = await Geolocator.getCurrentPosition();
+    print(location.latitude);
     _currentLatitude.value = location.latitude;
     _currentLongitude.value = location.longitude;
+
     initPlatformState();
 
     super.onInit();
@@ -109,6 +113,8 @@ class HomeController extends GetxController {
   }
 
   Future<void> getPackage() async {
+    Navigator.pop(Get.context!);
+    _isLoading.value = true;
     try {
       final trackings = await homeUseCases.getPackages(
         code: _trackingCode.value,
@@ -118,7 +124,9 @@ class HomeController extends GetxController {
       trackings.forEach((element) {
         _packages.add(element.toMap());
       });
+      _isLoading.value = false;
     } on HttpError catch (error) {
+      _isLoading.value = false;
       switch (error) {
         case HttpError.badRequest:
           _mainError.value = UIError.badRequest;
@@ -139,6 +147,9 @@ class HomeController extends GetxController {
           _mainError.value = UIError.serverError;
           break;
         case HttpError.noResponse:
+          _mainError.value = UIError.noResponse;
+          break;
+        default:
           _mainError.value = UIError.noResponse;
           break;
       }
@@ -249,5 +260,23 @@ class HomeController extends GetxController {
       message: message,
       duration: Duration(seconds: 3),
     ).show(Get.context!);
+  }
+
+  Future<void> deleteItem(Map package) async {
+    _packages.remove(package);
+    final data = await homeUseCases.cache.readData('cash');
+    data[0]['packages'] = _packages;
+    await homeUseCases.cache.writeData(jsonEncode(data), path: 'cash');
+  }
+
+  Future<void> shareItem(Map package) async {
+    List tracings = package['trackings'];
+    print(tracings.last['description']);
+    await FlutterShare.share(
+      title: package['name'] + " - " + package['code'],
+      text: tracings.last['description'],
+      linkUrl: package['name'] + " - " + package['code'],
+      chooserTitle: 'KD Rastreios',
+    );
   }
 }

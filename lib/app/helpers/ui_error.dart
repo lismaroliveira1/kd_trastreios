@@ -31,12 +31,12 @@ extension UIErrorExtension on UIError {
         return R.translations.unauthorized;
       case UIError.unexpected:
         return R.translations.unexpected;
-      case UIError.unexpected:
+      case UIError.serverError:
         return R.translations.serverError;
       case UIError.noResponse:
         return R.translations.noResponse;
       default:
-        return '';
+        return '_';
     }
   }
 }

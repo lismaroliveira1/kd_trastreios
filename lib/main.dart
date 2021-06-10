@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
 import 'package:kd_rastreios_cp/app/application_binding.dart';
@@ -25,6 +26,7 @@ void main() {
         initialRoute: AppPages.INITIAL,
         initialBinding: ApplicationBinding(),
         getPages: AppPages.routes,
+        builder: EasyLoading.init(),
       ),
     ),
   );

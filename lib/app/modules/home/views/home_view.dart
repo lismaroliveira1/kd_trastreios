@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kd_rastreios_cp/app/helpers/helpers.dart';
@@ -65,7 +66,9 @@ class HomeView extends StatelessWidget {
       body: Builder(
         builder: (context) {
           controller.indexBottomBarStream.listen((view) {
-            pageController.jumpToPage(view!);
+            if (view != 10) {
+              pageController.jumpToPage(view!);
+            }
           });
           controller.mainErrorStream.listen((uiError) {
             if (uiError != UIError.noError) {
@@ -75,11 +78,22 @@ class HomeView extends StatelessWidget {
               );
             }
           });
+          controller.isLoadingOut.listen((event) {
+            if (event!) {
+              EasyLoading.show(status: 'Buscando dados...');
+            } else {
+              EasyLoading.dismiss();
+            }
+          });
           return PageView(
             controller: pageController,
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
-              Obx(() => buildHomePage(controller.packages)),
+              Obx(() => buildHomePage(
+                    children: controller.packages,
+                    deletePackage: (code) => controller.deleteItem(code),
+                    sharePackage: (code) => controller.shareItem(code),
+                  )),
               buildcompletedTrackingsPage(),
               Obx(
                 () => buildAgenciesPage(

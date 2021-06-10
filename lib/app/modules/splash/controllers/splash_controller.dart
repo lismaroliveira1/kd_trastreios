@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -19,7 +21,7 @@ class SplashController extends GetxController {
   void onInit() async {
     await verifyLocationService();
     await cache.verifyCache();
-
+    await normalizePages();
     jumpToPage('/home');
     super.onInit();
   }
@@ -72,5 +74,12 @@ class SplashController extends GetxController {
 
   Future selectNotification(String payload) async {
     print('notification payload: $payload');
+  }
+
+  Future<void> normalizePages() async {
+    final _cache = await cache.readData('cash');
+    _cache[0]['setup']['page'] = 0;
+    print(_cache);
+    cache.writeData(jsonEncode(_cache), path: 'cash');
   }
 }

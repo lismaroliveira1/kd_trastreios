@@ -21,7 +21,6 @@ Dialog buildNewTrackingDialog({
         child: Container(
           height: 240,
           width: 300,
-          color: Colors.white,
           child: Column(
             children: <Widget>[
               Text(R.translations.newTrackingPackage),

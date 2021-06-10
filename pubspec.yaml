@@ -2,11 +2,11 @@ name: kd_rastreios_cp
 version: 1.0.0+1
 publish_to: none
 description: A new Flutter project.
-environment: 
-  sdk: '>=2.12.0 <3.0.0'
+environment:
+  sdk: ">=2.12.0 <3.0.0"
 
-dependencies: 
-  cupertino_icons: 
+dependencies:
+  cupertino_icons:
   get:
   bottom_navy_bar:
   http:
@@ -21,14 +21,16 @@ dependencies:
   flutter_local_notifications:
   provider:
   another_flushbar:
+  flutter_easyloading:
+  flutter_slidable:
+  flutter_share:
 
-  flutter: 
+  flutter:
     sdk: flutter
 
-dev_dependencies: 
-  flutter_test: 
+dev_dependencies:
+  flutter_test:
     sdk: flutter
 
-flutter: 
+flutter:
   uses-material-design: true
-
