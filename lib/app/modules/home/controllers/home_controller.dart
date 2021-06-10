@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:animations/animations.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:geolocator/geolocator.dart';
@@ -142,7 +144,7 @@ class HomeController extends GetxController {
         : _isValidFields.value = UIError.invalidFields;
   }
 
-  Future<void> getPackage() async {
+  Future<void> getPackageByCode() async {
     Navigator.pop(Get.context!);
     _isLoading.value = true;
     var error = UIError.noError;
@@ -160,48 +162,52 @@ class HomeController extends GetxController {
         _mainError.value = error;
       });
     } else {
-      try {
-        final trackings = await homeUseCases.getPackages(
-          code: _trackingCode.value,
-          name: _trackingName.value,
-        );
-        _packages.clear();
-        trackings.forEach((element) {
-          _packages.add(element.toMap());
-        });
-        updateHomeLists();
-        _isLoading.value = false;
-      } on HttpError catch (error) {
-        _isLoading.value = false;
-        switch (error) {
-          case HttpError.badRequest:
-            _mainError.value = UIError.badRequest;
-            break;
-          case HttpError.forbidden:
-            _mainError.value = UIError.forbidden;
-            break;
-          case HttpError.notFound:
-            _mainError.value = UIError.notFound;
-            break;
-          case HttpError.unauthorized:
-            _mainError.value = UIError.unauthorized;
-            break;
-          case HttpError.unexpected:
-            _mainError.value = UIError.unexpected;
-            break;
-          case HttpError.serverError:
-            _mainError.value = UIError.serverError;
-            break;
-          case HttpError.noResponse:
-            _mainError.value = UIError.noResponse;
-            break;
-          default:
-            _mainError.value = UIError.noResponse;
-            break;
-        }
-      }
+      await getPackages();
     }
     _mainError.value = UIError.noError;
+  }
+
+  Future<void> getPackages() async {
+    try {
+      final trackings = await homeUseCases.getPackages(
+        code: _trackingCode.value,
+        name: _trackingName.value,
+      );
+      _packages.clear();
+      trackings.forEach((element) {
+        _packages.add(element.toMap());
+      });
+      updateHomeLists();
+      _isLoading.value = false;
+    } on HttpError catch (error) {
+      _isLoading.value = false;
+      switch (error) {
+        case HttpError.badRequest:
+          _mainError.value = UIError.badRequest;
+          break;
+        case HttpError.forbidden:
+          _mainError.value = UIError.forbidden;
+          break;
+        case HttpError.notFound:
+          _mainError.value = UIError.notFound;
+          break;
+        case HttpError.unauthorized:
+          _mainError.value = UIError.unauthorized;
+          break;
+        case HttpError.unexpected:
+          _mainError.value = UIError.unexpected;
+          break;
+        case HttpError.serverError:
+          _mainError.value = UIError.serverError;
+          break;
+        case HttpError.noResponse:
+          _mainError.value = UIError.noResponse;
+          break;
+        default:
+          _mainError.value = UIError.noResponse;
+          break;
+      }
+    }
   }
 
   void changeThemeMode(int mode) async {
@@ -317,5 +323,29 @@ class HomeController extends GetxController {
       linkUrl: package['name'] + " - " + package['code'],
       chooserTitle: 'KD Rastreios',
     );
+  }
+
+  Future<void> getPackageByBarCode(Dialog buildNewTrackingDialog) async {
+    final _result = await FlutterBarcodeScanner.scanBarcode(
+      "#ff6666",
+      "Cancelar",
+      true,
+      ScanMode.BARCODE,
+    );
+    if (_result != "-1") {
+      await showDialogBox(buildNewTrackingDialog);
+      _isLoading.value = true;
+      await getPackages();
+    }
+  }
+
+  Future<void> showDialogBox(Dialog buildNewTrackingDialog) async {
+    await showModal(
+        context: Get.context!,
+        configuration: FadeScaleTransitionConfiguration(
+          transitionDuration: Duration(milliseconds: 600),
+          reverseTransitionDuration: Duration(milliseconds: 250),
+        ),
+        builder: (context) => buildNewTrackingDialog);
   }
 }

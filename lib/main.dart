@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kd_rastreios_cp/app/application_binding.dart';
 import 'package:kd_rastreios_cp/app/helpers/helpers.dart';
 import 'package:kd_rastreios_cp/app/themes/make_app_dark_theme.dart';
@@ -13,6 +14,7 @@ import 'app/routes/app_pages.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   runApp(
     AdaptiveTheme(
       light: makeAppLightTheme(),

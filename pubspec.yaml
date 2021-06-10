@@ -23,6 +23,8 @@ dependencies:
   flutter_easyloading:
   flutter_slidable:
   flutter_share:
+  flutter_barcode_scanner:
+  google_mobile_ads:
 
   flutter:
     sdk: flutter

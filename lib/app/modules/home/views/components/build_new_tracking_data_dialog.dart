@@ -5,17 +5,17 @@ import '../../../../i18n/i18n.dart';
 import './components.dart';
 
 Dialog buildNewTrackingDialog({
-  required Function hideKeyboard,
   required Stream<UIError?> nameFieldErrorStream,
   required Stream<UIError?> codeFieldErrorStream,
   required Stream<UIError?> uiErrorStream,
   required Function(String value) validateName,
   required Function(String value) validateCode,
   required Function getTrackings,
+  required bool isBarCode,
 }) {
   return Dialog(
     child: InkWell(
-      onTap: () => hideKeyboard(),
+      onTap: () {},
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Container(
@@ -25,10 +25,12 @@ Dialog buildNewTrackingDialog({
             children: <Widget>[
               Text(R.translations.newTrackingPackage),
               Spacer(),
-              buildCodeTextField(
-                codeFieldErrorStream: codeFieldErrorStream,
-                validateCode: (value) => validateCode(value),
-              ),
+              !isBarCode
+                  ? buildCodeTextField(
+                      codeFieldErrorStream: codeFieldErrorStream,
+                      validateCode: (value) => validateCode(value),
+                    )
+                  : Container(),
               buildNameTextField(
                   nameFieldErrorStream: nameFieldErrorStream,
                   validateName: (value) => validateName(value)),
