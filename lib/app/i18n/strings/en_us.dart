@@ -6,6 +6,7 @@ class EnUS implements Translations {
   String get badRequest => 'Something went wrong, try again later';
   String get unexpected => 'Something went wrong, try again later';
   String get notFound => "This isn't a valid correios package code";
+  String get notCompletedPackages => "You don't have active tracking";
   String get forbidden => 'Something is wrong, try again later';
   String get tranckindCode => 'Tracking code';
   String get packageName => 'Package name';
@@ -14,6 +15,7 @@ class EnUS implements Translations {
   String get inTransit => 'In transit';
   String get completed => 'In transit';
   String get nearbyAgencies => 'Nearby Agencies';
+  String get completedPackages => "You don't have full screenings";
   String get unauthorized =>
       'Service currently unavailable, please try again later';
   String get setup => 'Setup';

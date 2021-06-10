@@ -19,8 +19,8 @@ class HomeUseCases {
     final url =
         'https://api.rastrearpedidos.com.br/api/rastreio/v1?codigo=$code';
     final response = await client.get(Uri.parse(url));
-    print(response.statusCode);
-    print(response.body);
+    (response.statusCode);
+    (response.body);
     if (response.statusCode == 200) {
       try {
         final responseBody = jsonDecode(response.body);
@@ -67,7 +67,7 @@ class HomeUseCases {
   Future<void> setThemeMode(int mode) async {
     final _cache = await cache.readData('cash');
     _cache[0]['setup']['themeMode'] = mode;
-    print(_cache[0]['setup']);
+    (_cache[0]['setup']);
     cache.writeData(jsonEncode(_cache), path: 'cash');
   }
 

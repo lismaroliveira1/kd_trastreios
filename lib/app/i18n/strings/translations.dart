@@ -18,4 +18,6 @@ abstract class Translations {
   String get invalidCode;
   String get serverError;
   String get noResponse;
+  String get completedPackages;
+  String get notCompletedPackages;
 }

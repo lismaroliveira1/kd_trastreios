@@ -8,7 +8,6 @@ class HomeBinding extends Bindings {
     Get.lazyPut(
       () => HomeController(
         homeUseCases: HomeUseCases(client: Get.find(), cache: Get.find()),
-        googleMapController: Get.find(),
         flutterLocalNotificationsPlugin: Get.find(),
       ),
     );

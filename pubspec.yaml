@@ -13,7 +13,6 @@ dependencies:
   path_provider:
   animations:
   timelines:
-  google_maps_flutter:
   adaptive_theme:
   google_fonts:
   background_fetch: ^1.0.0-nullsafety.2

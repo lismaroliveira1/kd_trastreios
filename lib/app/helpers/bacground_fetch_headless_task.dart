@@ -29,8 +29,8 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   List<dynamic> packages = data[0]['packages'];
   List<dynamic> _trackings = [];
   packages.forEach((element) async {
-    print(element['code']);
-    print(element['name']);
+    (element['code']);
+    (element['name']);
     List<dynamic> oldTrackings = element['trackings'];
     if (oldTrackings.first['description'] !=
         'Objeto entregue ao destinatário') {
@@ -68,5 +68,5 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 }
 
 Future selectNotification(String payload) async {
-  print('notification payload: $payload');
+  ('notification payload: $payload');
 }

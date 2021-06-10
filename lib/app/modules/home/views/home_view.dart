@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kd_rastreios_cp/app/helpers/helpers.dart';
 
 import '../controllers/controllers.dart';
@@ -14,11 +11,10 @@ import './pages/pages.dart';
 class HomeView extends StatelessWidget {
   final HomeController controller;
   final PageController pageController;
-  final Completer<GoogleMapController> googleMapController;
+
   HomeView({
     required this.controller,
     required this.pageController,
-    required this.googleMapController,
   });
   @override
   Widget build(BuildContext context) {
@@ -31,7 +27,7 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() => Text(controller.packages.length.toString())),
+        title: Obx(() => Text(controller.textBarOut)),
         centerTitle: true,
         actions: [
           IconButton(
@@ -90,17 +86,15 @@ class HomeView extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
               Obx(() => buildHomePage(
-                    children: controller.packages,
+                    children: controller.packagesNotCompleted,
                     deletePackage: (code) => controller.deleteItem(code),
                     sharePackage: (code) => controller.shareItem(code),
                   )),
-              buildcompletedTrackingsPage(),
-              Obx(
-                () => buildAgenciesPage(
-                  latitude: controller.currentLatitudeOut,
-                  longitude: controller.currentLongitudeOut,
-                ),
-              ),
+              Obx(() => buildcompletedTrackingsPage(
+                    children: controller.packagesCompleted,
+                    deletePackage: (code) => controller.deleteItem(code),
+                    sharePackage: (code) => controller.shareItem(code),
+                  )),
               Obx(
                 () => buildSetupPage(
                   changeNotificationMode: (mode) =>

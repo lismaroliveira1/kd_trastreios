@@ -23,14 +23,6 @@ BottomNavyBar buildBottomNavyBar({
         textAlign: TextAlign.center,
       ),
       BottomNavyBarItem(
-        icon: Icon(Icons.map),
-        title: Text(
-          R.translations.nearbyAgencies,
-        ),
-        activeColor: Colors.pink,
-        textAlign: TextAlign.center,
-      ),
-      BottomNavyBarItem(
         icon: Icon(Icons.settings),
         title: Text(R.translations.setup),
         activeColor: Colors.blue,

@@ -73,13 +73,12 @@ class SplashController extends GetxController {
   }
 
   Future selectNotification(String payload) async {
-    print('notification payload: $payload');
+    ('notification payload: $payload');
   }
 
   Future<void> normalizePages() async {
     final _cache = await cache.readData('cash');
     _cache[0]['setup']['page'] = 0;
-    print(_cache);
     cache.writeData(jsonEncode(_cache), path: 'cash');
   }
 }

@@ -9,19 +9,16 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../helpers/helpers.dart';
 import '../../../modules/home/home.dart';
 
 class HomeController extends GetxController {
   final HomeUseCases homeUseCases;
-  final Completer<GoogleMapController> googleMapController;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   HomeController({
     required this.homeUseCases,
-    required this.googleMapController,
     required this.flutterLocalNotificationsPlugin,
   });
 
@@ -32,14 +29,19 @@ class HomeController extends GetxController {
   var _nameFieldError = Rx<UIError>(UIError.noError);
   var _isValidFields = Rx<UIError>(UIError.invalidFields);
   var _packages = <Map<dynamic, dynamic>>[].obs;
+  var _packagesCompleteds = <Map<dynamic, dynamic>>[].obs;
+  var _packagesNotCompleteds = <Map<dynamic, dynamic>>[].obs;
   var _themeMode = 1.obs;
   var _notificationSetup = 0.obs;
   var _currentLatitude = 1.0.obs;
   var _currentLongitude = 1.0.obs;
+  var _textBar = 'Rastreios ativos'.obs;
+
   var _mainError = Rx<UIError>(UIError.noError);
   var _isLoading = Rx<bool>(false);
 
   int get indexBottomBarOut => _indexBottomBar.value;
+  String get textBarOut => _textBar.value;
   Stream<int?> get indexBottomBarStream => _indexBottomBar.stream;
   Stream<UIError?> get codeFieldErrorStream => _codeFieldError.stream;
   Stream<UIError?> get nameFieldErrorStream => _nameFieldError.stream;
@@ -47,6 +49,10 @@ class HomeController extends GetxController {
   Stream<UIError?> get isValidFieldOut => _isValidFields.stream;
   Stream<bool?> get isLoadingOut => _isLoading.stream;
   List<Map<dynamic, dynamic>> get packages => _packages.toList();
+  List<Map<dynamic, dynamic>> get packagesCompleted =>
+      _packagesCompleteds.toList();
+  List<Map<dynamic, dynamic>> get packagesNotCompleted =>
+      _packagesNotCompleteds.toList();
   int get themeModeOut => _themeMode.value;
   int get notificationSetupOut => _notificationSetup.value;
   double get currentLatitudeOut => _currentLatitude.value;
@@ -56,18 +62,19 @@ class HomeController extends GetxController {
   void onInit() async {
     final _cache = await homeUseCases.cache.readData('cash');
     List<dynamic> packagesCache = _cache[0]['packages'];
-    _themeMode.value = _cache[0]['setup']['themeMode'];
-    _notificationSetup.value = _cache[0]['setup']['notificationMode'];
     _packages.clear();
+    _packagesCompleteds.clear();
+    _packagesNotCompleteds.clear();
     packagesCache.forEach((element) {
       _packages.add(element);
     });
-
+    _themeMode.value = _cache[0]['setup']['themeMode'];
+    _notificationSetup.value = _cache[0]['setup']['notificationMode'];
     final location = await Geolocator.getCurrentPosition();
-    print(location.latitude);
+    (location.latitude);
     _currentLatitude.value = location.latitude;
     _currentLongitude.value = location.longitude;
-
+    updateHomeLists();
     initPlatformState();
 
     super.onInit();
@@ -80,6 +87,17 @@ class HomeController extends GetxController {
 
   void changeIndexBottomBar(int index) {
     _indexBottomBar.value = index;
+    switch (index) {
+      case 0:
+        _textBar.value = 'Rastreios ativos';
+        break;
+      case 1:
+        _textBar.value = "Rastreios completos";
+        break;
+      case 2:
+        _textBar.value = " Configurações";
+        break;
+    }
   }
 
   @override
@@ -92,6 +110,18 @@ class HomeController extends GetxController {
         ? _codeFieldError.value = UIError.noError
         : _codeFieldError.value = UIError.invalidCode;
     validateButton();
+  }
+
+  void updateHomeLists() {
+    _packages.forEach((element) {
+      List trackings = element['trackings'];
+      if (trackings.first['description'] == 'Objeto entregue ao destinatário') {
+        _packagesCompleteds.add(element);
+        print(element);
+      } else {
+        _packagesNotCompleteds.add(element);
+      }
+    });
   }
 
   void validateName(String value) {
@@ -139,6 +169,7 @@ class HomeController extends GetxController {
         trackings.forEach((element) {
           _packages.add(element.toMap());
         });
+        updateHomeLists();
         _isLoading.value = false;
       } on HttpError catch (error) {
         _isLoading.value = false;
@@ -171,14 +202,6 @@ class HomeController extends GetxController {
       }
     }
     _mainError.value = UIError.noError;
-  }
-
-  void onMapComplete(GoogleMapController controller) {
-    try {
-      googleMapController.complete(controller);
-    } catch (err) {
-      print(err);
-    }
   }
 
   void changeThemeMode(int mode) async {
@@ -222,7 +245,7 @@ class HomeController extends GetxController {
         _onBackgroundFetch,
         _onBackgroundFetchTimeout,
       );
-      print('[BackgroundFetch] configure success: $status');
+      ('[BackgroundFetch] configure success: $status');
 
       BackgroundFetch.scheduleTask(
         TaskConfig(
@@ -235,18 +258,18 @@ class HomeController extends GetxController {
         ),
       );
     } catch (e) {
-      print("[BackgroundFetch] configure ERROR: $e");
+      ("[BackgroundFetch] configure ERROR: $e");
     }
   }
 
   void _onBackgroundFetch(String taskId) async {
-    print("[BackgroundFetch] Event received: $taskId");
+    ("[BackgroundFetch] Event received: $taskId");
 
     BackgroundFetch.finish(taskId);
   }
 
   void _onBackgroundFetchTimeout(String taskId) {
-    print("[BackgroundFetch] TIMEOUT: $taskId");
+    ("[BackgroundFetch] TIMEOUT: $taskId");
     BackgroundFetch.finish(taskId);
   }
 
@@ -287,7 +310,7 @@ class HomeController extends GetxController {
 
   Future<void> shareItem(Map package) async {
     List tracings = package['trackings'];
-    print(tracings.last['description']);
+    (tracings.last['description']);
     await FlutterShare.share(
       title: package['name'] + " - " + package['code'],
       text: tracings.last['description'],

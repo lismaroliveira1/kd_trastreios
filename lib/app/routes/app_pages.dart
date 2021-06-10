@@ -16,9 +16,9 @@ class AppPages {
     GetPage(
       name: _Paths.HOME,
       page: () => HomeView(
-          controller: Get.find(),
-          pageController: Get.find(),
-          googleMapController: Get.find()),
+        controller: Get.find(),
+        pageController: Get.find(),
+      ),
       binding: HomeBinding(),
     ),
     GetPage(
