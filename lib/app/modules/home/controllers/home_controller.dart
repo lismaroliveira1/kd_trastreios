@@ -115,43 +115,59 @@ class HomeController extends GetxController {
   Future<void> getPackage() async {
     Navigator.pop(Get.context!);
     _isLoading.value = true;
-    try {
-      final trackings = await homeUseCases.getPackages(
-        code: _trackingCode.value,
-        name: _trackingName.value,
-      );
-      _packages.clear();
-      trackings.forEach((element) {
-        _packages.add(element.toMap());
+    var error = UIError.noError;
+    _packages.forEach((package) {
+      if (package['code'] == _trackingCode.value) {
+        error = UIError.alreadyExists;
+      }
+    });
+    if (error == UIError.alreadyExists) {
+      Future.delayed(
+          Duration(
+            seconds: 2,
+          ), () {
+        _isLoading.value = false;
+        _mainError.value = error;
       });
-      _isLoading.value = false;
-    } on HttpError catch (error) {
-      _isLoading.value = false;
-      switch (error) {
-        case HttpError.badRequest:
-          _mainError.value = UIError.badRequest;
-          break;
-        case HttpError.forbidden:
-          _mainError.value = UIError.forbidden;
-          break;
-        case HttpError.notFound:
-          _mainError.value = UIError.notFound;
-          break;
-        case HttpError.unauthorized:
-          _mainError.value = UIError.unauthorized;
-          break;
-        case HttpError.unexpected:
-          _mainError.value = UIError.unexpected;
-          break;
-        case HttpError.serverError:
-          _mainError.value = UIError.serverError;
-          break;
-        case HttpError.noResponse:
-          _mainError.value = UIError.noResponse;
-          break;
-        default:
-          _mainError.value = UIError.noResponse;
-          break;
+    } else {
+      try {
+        final trackings = await homeUseCases.getPackages(
+          code: _trackingCode.value,
+          name: _trackingName.value,
+        );
+        _packages.clear();
+        trackings.forEach((element) {
+          _packages.add(element.toMap());
+        });
+        _isLoading.value = false;
+      } on HttpError catch (error) {
+        _isLoading.value = false;
+        switch (error) {
+          case HttpError.badRequest:
+            _mainError.value = UIError.badRequest;
+            break;
+          case HttpError.forbidden:
+            _mainError.value = UIError.forbidden;
+            break;
+          case HttpError.notFound:
+            _mainError.value = UIError.notFound;
+            break;
+          case HttpError.unauthorized:
+            _mainError.value = UIError.unauthorized;
+            break;
+          case HttpError.unexpected:
+            _mainError.value = UIError.unexpected;
+            break;
+          case HttpError.serverError:
+            _mainError.value = UIError.serverError;
+            break;
+          case HttpError.noResponse:
+            _mainError.value = UIError.noResponse;
+            break;
+          default:
+            _mainError.value = UIError.noResponse;
+            break;
+        }
       }
     }
     _mainError.value = UIError.noError;

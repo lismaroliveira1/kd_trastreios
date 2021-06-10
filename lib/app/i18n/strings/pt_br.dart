@@ -1,6 +1,7 @@
 import './strings.dart';
 
 class PtBr implements Translations {
+  String get alreadyExists => 'Este pacote já está sendo rastreado';
   String get badRequest => 'Algo deu errado, tente novamente mais tarde';
   String get forbidden => 'Algo deu errado, tente novamente mais tarde';
   String get notFound => "Este não é um código Correios válido ";

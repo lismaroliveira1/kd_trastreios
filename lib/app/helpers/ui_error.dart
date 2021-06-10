@@ -12,6 +12,7 @@ enum UIError {
   serverError,
   noError,
   noResponse,
+  alreadyExists,
 }
 
 extension UIErrorExtension on UIError {
@@ -35,6 +36,8 @@ extension UIErrorExtension on UIError {
         return R.translations.serverError;
       case UIError.noResponse:
         return R.translations.noResponse;
+      case UIError.alreadyExists:
+        return R.translations.alreadyExists;
       default:
         return '_';
     }

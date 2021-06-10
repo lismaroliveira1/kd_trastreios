@@ -1,4 +1,5 @@
 abstract class Translations {
+  String get alreadyExists;
   String get badRequest;
   String get notFound;
   String get forbidden;

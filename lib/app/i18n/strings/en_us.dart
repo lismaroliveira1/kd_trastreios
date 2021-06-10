@@ -1,6 +1,7 @@
 import './strings.dart';
 
 class EnUS implements Translations {
+  String get alreadyExists => 'This package already exists';
   String get newTrackingPackage => 'New tracking package';
   String get badRequest => 'Something went wrong, try again later';
   String get unexpected => 'Something went wrong, try again later';
