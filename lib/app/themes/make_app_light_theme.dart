@@ -14,8 +14,9 @@ ThemeData makeAppLightTheme() {
     backgroundColor: Colors.white,
     textTheme: TextTheme(
       headline1: GoogleFonts.itim(
-        fontSize: 28,
-        fontWeight: FontWeight.w700,
+        color: Color.fromRGBO(100, 151, 177, 1),
+        fontSize: 25,
+        fontWeight: FontWeight.w400,
       ),
       headline2: GoogleFonts.itim(
         fontSize: 16,

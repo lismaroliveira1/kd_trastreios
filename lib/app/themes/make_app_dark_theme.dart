@@ -16,15 +16,23 @@ ThemeData makeAppDarkTheme() {
     accentColor: _accentColor,
     backgroundColor: _backgroundColor,
     textTheme: TextTheme(
-      headline1: GoogleFonts.itim(
-        fontSize: 28,
-        fontWeight: FontWeight.w700,
-      ),
-      headline2: GoogleFonts.itim(
-        fontSize: 16,
-        fontWeight: FontWeight.w700,
-      ),
-    ),
+        bodyText1: GoogleFonts.itim(
+          color: Color.fromRGBO(80, 200, 120, 1),
+          fontSize: 20,
+          fontWeight: FontWeight.w400,
+        ),
+        headline1: GoogleFonts.itim(
+          color: Color.fromRGBO(100, 151, 177, 1),
+          fontSize: 25,
+          fontWeight: FontWeight.w400,
+        ),
+        headline2: GoogleFonts.itim(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+        ),
+        headline3: TextStyle(
+          fontSize: 14,
+        )),
     inputDecorationTheme: InputDecorationTheme(
       enabledBorder: UnderlineInputBorder(
         borderSide: BorderSide(
